@@ -1,0 +1,7 @@
+[
+  { "key": "travel", "label": "여행", "score": 1 },
+  { "key": "marriage", "label": "결혼", "score": -1 },
+  { "key": "business", "label": "사업", "score": 1 },
+  { "key": "contract", "label": "계약", "score": -1 },
+  { "key": "treatment", "label": "치료", "score": 1 }
+]

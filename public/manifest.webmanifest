@@ -1,0 +1,9 @@
+{
+  "name": "Auspicious Days Calendar",
+  "short_name": "Auspicious",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": []
+}

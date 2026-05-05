@@ -1,0 +1,7 @@
+[
+  { "day": 1, "score": 2, "goodFor": ["기도", "자선"], "avoid": ["계약"], "mitigation": "짧은 두아와 준비 점검" },
+  { "day": 7, "score": -1, "goodFor": ["정리", "휴식"], "avoid": ["이사"], "mitigation": "중요 결정은 하루 미루기" },
+  { "day": 10, "score": 3, "goodFor": ["여행", "사업"], "avoid": ["과소비"], "mitigation": "예산 상한 정하기" },
+  { "day": 15, "score": 1, "goodFor": ["치료", "기도"], "avoid": ["매도"], "mitigation": "상담 후 실행" },
+  { "day": 21, "score": -2, "goodFor": ["자선"], "avoid": ["결혼", "매수"], "mitigation": "가벼운 일정만 진행" }
+]

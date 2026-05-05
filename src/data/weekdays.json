@@ -1,0 +1,9 @@
+[
+  { "weekday": 0, "label": "일", "baseScore": 1 },
+  { "weekday": 1, "label": "월", "baseScore": 0 },
+  { "weekday": 2, "label": "화", "baseScore": -1 },
+  { "weekday": 3, "label": "수", "baseScore": 1 },
+  { "weekday": 4, "label": "목", "baseScore": 0 },
+  { "weekday": 5, "label": "금", "baseScore": 2 },
+  { "weekday": 6, "label": "토", "baseScore": -1 }
+]
