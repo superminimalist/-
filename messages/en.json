@@ -1,0 +1,153 @@
+{
+  "site": {
+    "name": "Virtual Imambargah",
+    "tagline": "Majalis, nauhas and marsiyas — wherever you are"
+  },
+  "nav": {
+    "home": "Home",
+    "schedule": "Schedule",
+    "library": "Library",
+    "admin": "Admin",
+    "login": "Sign in",
+    "logout": "Sign out",
+    "world": "3D Imambargah"
+  },
+  "status": {
+    "scheduled": "Scheduled",
+    "live": "Live",
+    "ended": "Ended"
+  },
+  "home": {
+    "liveNow": "Live now",
+    "upcoming": "Upcoming majalis",
+    "noUpcoming": "No majalis scheduled yet.",
+    "viewSchedule": "Full schedule",
+    "watch": "Join"
+  },
+  "schedule": {
+    "title": "Majlis schedule",
+    "empty": "Nothing scheduled.",
+    "standalone": "Other majalis",
+    "timezoneNote": "Times are shown in your time zone: {tz}"
+  },
+  "majlis": {
+    "speaker": "Speaker",
+    "notStarted": "This majlis has not started yet.",
+    "startsIn": "Starts {time}",
+    "ended": "This majlis has ended.",
+    "recording": "Recording",
+    "noRecording": "No recording available.",
+    "viewers": "{count, plural, one {# listener} other {# listeners}}",
+    "connecting": "Connecting…",
+    "waitingHost": "Waiting for the host to begin…",
+    "back": "Back"
+  },
+  "chat": {
+    "title": "Chat",
+    "placeholder": "Write a message…",
+    "send": "Send",
+    "loginToChat": "Sign in to join the chat",
+    "muted": "You have been muted by a moderator.",
+    "closed": "Chat is only open during the live majlis.",
+    "delete": "Delete",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "error": "Message could not be sent."
+  },
+  "library": {
+    "title": "Library",
+    "all": "All",
+    "search": "Search title or reciter",
+    "allLanguages": "All languages",
+    "empty": "No items found.",
+    "original": "Original",
+    "translation": "Translation",
+    "reciter": "Reciter"
+  },
+  "libraryTypes": {
+    "nauha": "Nauha",
+    "marsiya": "Marsiya",
+    "ziyarat": "Ziyarat",
+    "dua": "Dua"
+  },
+  "languages": {
+    "ur": "Urdu",
+    "ar": "Arabic",
+    "fa": "Persian",
+    "en": "English",
+    "ko": "Korean",
+    "hi": "Hindi"
+  },
+  "auth": {
+    "title": "Sign in",
+    "email": "Email",
+    "displayName": "Display name (first sign-in only)",
+    "send": "Send sign-in link",
+    "sent": "Check your inbox for the sign-in link.",
+    "error": "Could not send the link. Try again."
+  },
+  "admin": {
+    "title": "Admin",
+    "forbidden": "Hosts and admins only.",
+    "majalis": "Majalis",
+    "newMajlis": "New majlis",
+    "newSeries": "New series",
+    "newLibrary": "Add to library",
+    "library": "Library",
+    "moderation": "Moderation",
+    "fieldTitle": "Title",
+    "speaker": "Speaker",
+    "description": "Description",
+    "startsAt": "Start time",
+    "series": "Series",
+    "none": "— none —",
+    "occasion": "Occasion",
+    "hijriYear": "Hijri year",
+    "type": "Type",
+    "language": "Language",
+    "reciter": "Reciter",
+    "audioFile": "Audio file",
+    "textOriginal": "Original text",
+    "textTranslation": "Translation",
+    "create": "Create",
+    "delete": "Delete",
+    "host": "Host console",
+    "bannedWords": "Banned words",
+    "addWord": "Add",
+    "mutedUsers": "Muted users",
+    "noMuted": "Nobody is muted.",
+    "unmute": "Unmute"
+  },
+  "host": {
+    "title": "Host console",
+    "hint": "Allow camera and microphone. Listeners hear you once you go live.",
+    "goLive": "Go live",
+    "end": "End majlis",
+    "recordingOn": "Recording to storage",
+    "recordingOff": "Recording is not configured",
+    "back": "Back to admin"
+  },
+  "world": {
+    "title": "3D Imambargah",
+    "back": "Leave",
+    "online": "{count} online",
+    "name": "Name",
+    "color": "Kurta colour",
+    "chatPlaceholder": "Press Enter to chat…",
+    "controls": "WASD move · Shift run · Space jump · drag to look · wheel zoom · Enter chat",
+    "hallLive": "Live in this hall now",
+    "hallNone": "No majlis is live right now.",
+    "nextMajlis": "Next majlis",
+    "join": "Join from here",
+    "leave": "Leave",
+    "fullPage": "Full view",
+    "muted": "You have been muted by a moderator.",
+    "b": {
+      "rumi": "Rumi Darwaza",
+      "naubat": "Naubat Gate",
+      "hall": "Imambargah Hall",
+      "mosque": "Asfi Mosque",
+      "baoli": "Shahi Baoli"
+    }
+  }
+}

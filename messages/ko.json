@@ -1,0 +1,153 @@
+{
+  "site": {
+    "name": "버츄얼 이맘바르가",
+    "tagline": "어디서든 함께하는 마즐리스, 노하, 마르시야"
+  },
+  "nav": {
+    "home": "홈",
+    "schedule": "일정",
+    "library": "자료실",
+    "admin": "관리",
+    "login": "로그인",
+    "logout": "로그아웃",
+    "world": "3D 이맘바르가"
+  },
+  "status": {
+    "scheduled": "예정",
+    "live": "라이브",
+    "ended": "종료"
+  },
+  "home": {
+    "liveNow": "지금 진행 중",
+    "upcoming": "다가오는 마즐리스",
+    "noUpcoming": "예정된 마즐리스가 없습니다.",
+    "viewSchedule": "전체 일정",
+    "watch": "참여하기"
+  },
+  "schedule": {
+    "title": "마즐리스 일정",
+    "empty": "예정된 일정이 없습니다.",
+    "standalone": "기타 마즐리스",
+    "timezoneNote": "시간은 내 시간대 기준입니다: {tz}"
+  },
+  "majlis": {
+    "speaker": "연사",
+    "notStarted": "아직 시작하지 않은 마즐리스입니다.",
+    "startsIn": "시작: {time}",
+    "ended": "종료된 마즐리스입니다.",
+    "recording": "다시보기",
+    "noRecording": "녹화본이 없습니다.",
+    "viewers": "{count}명 참여 중",
+    "connecting": "연결 중…",
+    "waitingHost": "주최자가 시작하기를 기다리는 중…",
+    "back": "뒤로"
+  },
+  "chat": {
+    "title": "채팅",
+    "placeholder": "메시지 입력…",
+    "send": "보내기",
+    "loginToChat": "채팅하려면 로그인하세요",
+    "muted": "관리자에 의해 채팅이 제한되었습니다.",
+    "closed": "채팅은 라이브 중에만 열립니다.",
+    "delete": "삭제",
+    "mute": "뮤트",
+    "unmute": "뮤트 해제",
+    "error": "메시지를 보내지 못했습니다."
+  },
+  "library": {
+    "title": "자료실",
+    "all": "전체",
+    "search": "제목 또는 낭송자 검색",
+    "allLanguages": "모든 언어",
+    "empty": "자료가 없습니다.",
+    "original": "원문",
+    "translation": "번역",
+    "reciter": "낭송자"
+  },
+  "libraryTypes": {
+    "nauha": "노하",
+    "marsiya": "마르시야",
+    "ziyarat": "지야라트",
+    "dua": "두아"
+  },
+  "languages": {
+    "ur": "우르두어",
+    "ar": "아랍어",
+    "fa": "페르시아어",
+    "en": "영어",
+    "ko": "한국어",
+    "hi": "힌디어"
+  },
+  "auth": {
+    "title": "로그인",
+    "email": "이메일",
+    "displayName": "표시 이름 (첫 로그인 시에만)",
+    "send": "로그인 링크 받기",
+    "sent": "메일함에서 로그인 링크를 확인하세요.",
+    "error": "링크를 보내지 못했습니다. 다시 시도하세요."
+  },
+  "admin": {
+    "title": "관리",
+    "forbidden": "주최자와 관리자만 접근할 수 있습니다.",
+    "majalis": "마즐리스",
+    "newMajlis": "새 마즐리스",
+    "newSeries": "새 시리즈",
+    "newLibrary": "자료 추가",
+    "library": "자료실",
+    "moderation": "채팅 관리",
+    "fieldTitle": "제목",
+    "speaker": "연사",
+    "description": "설명",
+    "startsAt": "시작 시간",
+    "series": "시리즈",
+    "none": "— 없음 —",
+    "occasion": "행사",
+    "hijriYear": "히즈리 연도",
+    "type": "종류",
+    "language": "언어",
+    "reciter": "낭송자",
+    "audioFile": "오디오 파일",
+    "textOriginal": "원문",
+    "textTranslation": "번역",
+    "create": "만들기",
+    "delete": "삭제",
+    "host": "송출 콘솔",
+    "bannedWords": "금칙어",
+    "addWord": "추가",
+    "mutedUsers": "뮤트된 사용자",
+    "noMuted": "뮤트된 사용자가 없습니다.",
+    "unmute": "해제"
+  },
+  "host": {
+    "title": "송출 콘솔",
+    "hint": "카메라와 마이크를 허용하세요. 라이브를 시작하면 참여자에게 송출됩니다.",
+    "goLive": "라이브 시작",
+    "end": "마즐리스 종료",
+    "recordingOn": "녹화 중 (스토리지 저장)",
+    "recordingOff": "녹화 미설정",
+    "back": "관리로 돌아가기"
+  },
+  "world": {
+    "title": "3D 이맘바르가",
+    "back": "나가기",
+    "online": "{count}명 접속 중",
+    "name": "이름",
+    "color": "쿠르타 색",
+    "chatPlaceholder": "Enter 눌러 채팅…",
+    "controls": "WASD 이동 · Shift 달리기 · Space 점프 · 드래그 시점 · 휠 줌 · Enter 채팅",
+    "hallLive": "지금 이 홀에서 진행 중",
+    "hallNone": "지금 진행 중인 마즐리스가 없습니다.",
+    "nextMajlis": "다음 마즐리스",
+    "join": "이 자리에서 참여",
+    "leave": "나가기",
+    "fullPage": "크게 보기",
+    "muted": "관리자에 의해 채팅이 제한되었습니다.",
+    "b": {
+      "rumi": "루미 다르와자",
+      "naubat": "나우바트 대문",
+      "hall": "이맘바르가 대홀",
+      "mosque": "아스피 모스크",
+      "baoli": "샤히 바올리"
+    }
+  }
+}

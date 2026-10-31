@@ -37,9 +37,13 @@ returns boolean language sql stable security definer set search_path = public as
 $$;
 
 -- members can edit their own name/locale, but not role/muted
+-- auth.uid() is null for SQL editor / service role → allowed (needed to promote the first admin)
 create or replace function public.guard_profile_update()
 returns trigger language plpgsql as $$
 begin
+  if auth.uid() is null then
+    return new;
+  end if;
   if (new.role is distinct from old.role) and not public.is_admin() then
     raise exception 'only admin can change role';
   end if;

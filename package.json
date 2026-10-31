@@ -1,0 +1,41 @@
+{
+  "name": "virtual-imambargah",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@livekit/components-react": "^2.9.24",
+    "@livekit/components-styles": "^1.2.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0",
+    "livekit-client": "^2.23.0",
+    "livekit-server-sdk": "^2.19.2",
+    "next": "15.5.28",
+    "next-intl": "^4.14.9",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "server-only": "^0.0.1",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/cli": "^4.3.3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.187.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.28",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
