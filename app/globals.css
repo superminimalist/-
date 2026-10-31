@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;600&family=Noto+Naskh+Arabic:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&family=Inter:wght@400;500;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0b0d0c;
+  --color-panel: #141816;
+  --color-line: #26302b;
+  --color-mute: #8a968f;
+  --color-text: #e8ece9;
+  --color-accent: #2f8f5b;      /* green of the 'alam */
+  --color-accent-soft: #1d3a2a;
+  --color-gold: #c9a24a;
+  --color-live: #c0392b;
+
+  --font-sans: "Inter", "Noto Sans KR", system-ui, sans-serif;
+  --font-arabic: "Amiri", "Noto Naskh Arabic", serif;
+  --font-urdu: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif;
+}
+
+html { background: var(--color-ink); color: var(--color-text); }
+body { font-family: var(--font-sans); min-height: 100dvh; }
+
+html[lang="ar"] body, html[lang="fa"] body { font-family: "Noto Naskh Arabic", var(--font-sans); }
+html[lang="ur"] body { font-family: var(--font-urdu); line-height: 2.1; }
+
+/* religious text blocks keep their own script font regardless of UI locale */
+.text-script-ar { font-family: var(--font-arabic); font-size: 1.35rem; line-height: 2.2; }
+.text-script-ur { font-family: var(--font-urdu); font-size: 1.15rem; line-height: 2.4; }
+.text-script-fa { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 1.2rem; line-height: 2.1; }
+
+.input {
+  @apply w-full rounded-md border border-line bg-ink px-3 py-2 text-sm text-text outline-none focus:border-accent;
+}
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition hover:brightness-110 disabled:opacity-50;
+}
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-md border border-line px-3 py-1.5 text-sm text-text transition hover:border-accent;
+}
+.btn-danger {
+  @apply inline-flex items-center justify-center gap-2 rounded-md bg-live px-4 py-2 text-sm font-medium text-white transition hover:brightness-110 disabled:opacity-50;
+}
+.card { @apply rounded-xl border border-line bg-panel p-5; }
+.label { @apply mb-1 block text-xs font-medium uppercase tracking-wide text-mute; }
