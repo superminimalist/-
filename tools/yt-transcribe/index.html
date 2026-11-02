@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YT Transcript</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600&family=Noto+Nastaliq+Urdu&family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f6f4;--card:#fff;--fg:#1b1b1b;--mut:#6b6b6b;--line:#e3e3df;--acc:#c4302b;--acc2:#fbe9e8;--ok:#2e7d32}
+@media (prefers-color-scheme:dark){:root{--bg:#141414;--card:#1d1d1d;--fg:#ececec;--mut:#9a9a9a;--line:#2e2e2e;--acc:#ff5a52;--acc2:#3a1d1c;--ok:#7bc67e}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:18px;margin:0 0 16px;display:flex;gap:8px;align-items:center}
+h1 b{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=text]{flex:1;min-width:240px;padding:12px 14px;font-size:16px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+input[type=text]:focus{outline:2px solid var(--acc);border-color:transparent}
+select,button{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font:inherit;cursor:pointer}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600;padding:12px 18px}
+button:disabled{opacity:.5;cursor:default}
+label{font-size:13px;color:var(--mut);display:flex;gap:6px;align-items:center}
+.opts{margin-top:12px;gap:14px}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:10px 0 6px}
+.bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .3s}
+.stage{font-size:13px;color:var(--mut)}
+.log{font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;color:var(--mut);white-space:pre-wrap;margin-top:8px;max-height:140px;overflow:auto}
+.err{color:var(--acc);font-weight:600}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.meta h2{font-size:16px;margin:0;flex-basis:100%}
+.tag{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--acc2);color:var(--acc)}
+.tools{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tools input{min-width:160px;padding:8px 10px;font-size:14px}
+.seg{display:flex;gap:12px;padding:4px 0;border-bottom:1px dashed var(--line)}
+.seg a{flex:none;font:12px/2 ui-monospace,Menlo,Consolas,monospace;color:var(--acc);text-decoration:none;min-width:54px}
+.seg span{flex:1}
+.plain .seg{border:0;padding:0;display:inline}
+.plain .seg a{display:none}
+.plain .seg span::after{content:" "}
+#out[dir=rtl]{font-family:"Noto Naskh Arabic",system-ui,sans-serif;font-size:18px;line-height:1.9}
+#out.lang-ur{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:18px;line-height:2.4}
+#out.lang-hi{font-family:"Noto Sans Devanagari",system-ui,sans-serif}
+#out[dir=rtl] .seg a{direction:ltr}
+mark{background:#ffe48a;color:#000}
+.hist{font-size:13px}
+.hist div{padding:6px 0;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:8px}
+.hist div:hover{color:var(--acc)}
+.hist small{color:var(--mut);flex:none}
+.hidden{display:none}
+.toast{position:fixed;bottom:20px;inset-inline-start:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><b>▶</b> YT Transcript</h1>
+
+  <div class="card">
+    <div class="row">
+      <input id="url" type="text" placeholder="유튜브 링크 붙여넣기 (붙여넣으면 바로 시작)" autocomplete="off" autofocus>
+      <button id="go" class="pri">받아쓰기</button>
+    </div>
+    <div class="row opts">
+      <label>언어 <select id="lang"><option value="auto">자동 감지</option></select></label>
+      <label>방식
+        <select id="mode">
+          <option value="auto">자막 우선 → 없으면 Whisper</option>
+          <option value="captions">유튜브 자막만</option>
+          <option value="whisper">Whisper만 (직접 받아쓰기)</option>
+        </select>
+      </label>
+      <label>모델 <select id="model"></select></label>
+      <label><input type="checkbox" id="translate"> 해당 언어 자막 없으면 유튜브 자동번역</label>
+    </div>
+    <div id="prog" class="hidden">
+      <div class="bar"><i id="barf"></i></div>
+      <div class="stage" id="stage"></div>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="res">
+    <div class="meta">
+      <h2 id="title"></h2>
+      <span class="tag" id="srcTag"></span>
+      <span class="tag" id="langTag"></span>
+      <span class="tag" id="cntTag"></span>
+    </div>
+    <div class="tools">
+      <button id="copy">복사</button>
+      <button id="tsToggle">타임스탬프 숨기기</button>
+      <button data-fmt="txt">TXT</button>
+      <button data-fmt="tstxt">TXT+시간</button>
+      <button data-fmt="srt">SRT</button>
+      <button data-fmt="vtt">VTT</button>
+      <button data-fmt="json">JSON</button>
+      <input id="find" type="text" placeholder="검색">
+    </div>
+    <div id="out"></div>
+  </div>
+
+  <div class="card hidden" id="histCard">
+    <div class="stage" style="margin-bottom:6px">최근 작업 (서버 재시작 전까지 유지)</div>
+    <div class="hist" id="hist"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('ytt.' + k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('ytt.' + k, JSON.stringify(v)); } catch {} },
+};
+const YT_RE = /(?:youtube\.com|youtu\.be|youtube-nocookie\.com)/i;
+let cur = null, pollT = null, plain = store.get('plain', false);
+
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 1400); }
+function clock(t) { t = Math.floor(t); const h = t / 3600 | 0, m = (t % 3600) / 60 | 0, s = t % 60;
+  return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s).padStart(2, '0'); }
+function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+async function init() {
+  const cfg = await fetch('/api/config').then(r => r.json());
+  for (const [code, l] of Object.entries(cfg.langs)) $('#lang').add(new Option(`${l.name} (${code})`, code));
+  for (const m of cfg.models) $('#model').add(new Option(m, m));
+  $('#lang').value = store.get('lang', 'auto');
+  $('#mode').value = store.get('mode', 'auto');
+  $('#model').value = store.get('model', cfg.default_model);
+  $('#translate').checked = store.get('translate', false);
+  for (const id of ['lang', 'mode', 'model']) $('#' + id).onchange = e => store.set(id, e.target.value);
+  $('#translate').onchange = e => store.set('translate', e.target.checked);
+  refreshHist();
+  const last = store.get('lastJob', null);
+  if (last) fetch('/api/jobs/' + last).then(r => r.ok ? r.json() : null).then(j => j && show(j));
+}
+
+async function start() {
+  const url = $('#url').value.trim();
+  if (!url) return;
+  $('#go').disabled = true;
+  const r = await fetch('/api/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, lang: $('#lang').value, mode: $('#mode').value, model: $('#model').value, translate: $('#translate').checked }) });
+  const j = await r.json();
+  $('#go').disabled = false;
+  if (!r.ok) { $('#prog').classList.remove('hidden'); $('#stage').innerHTML = `<span class="err">${esc(Array.isArray(j.detail) ? j.detail.map(d => d.msg).join(', ') : (j.detail || '오류'))}</span>`; return; }
+  store.set('lastJob', j.id);
+  poll(j.id);
+}
+
+function poll(id) {
+  clearTimeout(pollT);
+  fetch('/api/jobs/' + id).then(r => r.json()).then(j => {
+    show(j);
+    if (j.status === 'queued' || j.status === 'running') pollT = setTimeout(() => poll(id), 700);
+    else refreshHist();
+  }).catch(() => pollT = setTimeout(() => poll(id), 2000));
+}
+
+function show(j) {
+  $('#prog').classList.remove('hidden');
+  $('#barf').style.width = (j.progress * 100) + '%';
+  $('#stage').innerHTML = j.status === 'error' ? `<span class="err">오류: ${esc(j.error || '')}</span>` : esc(j.stage);
+  $('#log').textContent = (j.log || []).join('\n');
+  if (j.status !== 'done') { if (j.status !== 'error') $('#res').classList.add('hidden'); return; }
+  cur = j;
+  const r = j.result;
+  $('#res').classList.remove('hidden');
+  $('#title').textContent = r.title;
+  $('#srcTag').textContent = ({ 'youtube-manual': '유튜브 자막', 'youtube-auto': '유튜브 자동자막' }[r.source]) ||
+    (r.source.startsWith('youtube-translated') ? '유튜브 자동번역 (' + r.source.split(':')[1] + '→)' : r.source.replace('whisper:', 'Whisper '));
+  $('#langTag').textContent = r.language;
+  $('#cntTag').textContent = r.segments.length + '구간';
+  const out = $('#out');
+  out.dir = r.rtl ? 'rtl' : 'ltr';
+  out.lang = r.language;
+  out.className = 'lang-' + r.language + (plain ? ' plain' : '');
+  out.innerHTML = r.segments.map(s =>
+    `<div class="seg"><a href="https://www.youtube.com/watch?v=${r.video_id}&t=${Math.floor(s.start)}s" target="_blank">${clock(s.start)}</a><span>${esc(s.text)}</span></div>`).join('');
+  $('#tsToggle').textContent = plain ? '타임스탬프 보이기' : '타임스탬프 숨기기';
+  $('#find').value = '';
+}
+
+async function refreshHist() {
+  const list = await fetch('/api/jobs').then(r => r.json()).catch(() => []);
+  $('#histCard').classList.toggle('hidden', !list.length);
+  $('#hist').innerHTML = list.map(j =>
+    `<div data-id="${j.id}"><small>${new Date(j.created * 1000).toLocaleTimeString()}</small><span>${esc(j.title || j.url)}</span><small>${j.status === 'done' ? '' : j.status}</small></div>`).join('');
+}
+
+$('#hist').onclick = e => { const d = e.target.closest('[data-id]'); if (d) { store.set('lastJob', d.dataset.id); poll(d.dataset.id); } };
+$('#go').onclick = start;
+$('#url').addEventListener('keydown', e => { if (e.key === 'Enter') start(); });
+$('#url').addEventListener('paste', e => {
+  const t = (e.clipboardData || window.clipboardData).getData('text');
+  if (YT_RE.test(t) || /^[\w-]{11}$/.test(t.trim())) setTimeout(start, 0);
+});
+$('#copy').onclick = async () => {
+  if (!cur) return;
+  const txt = cur.result.segments.map(s => plain ? s.text : `[${clock(s.start)}] ${s.text}`).join(plain ? ' ' : '\n');
+  await navigator.clipboard.writeText(txt); toast('복사됨');
+};
+$('#tsToggle').onclick = () => { plain = !plain; store.set('plain', plain); if (cur) show(cur); };
+document.querySelectorAll('[data-fmt]').forEach(b => b.onclick = () => { if (cur) location.href = `/api/jobs/${cur.id}/download?fmt=${b.dataset.fmt}`; });
+$('#find').oninput = e => {
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('#out .seg').forEach((el, i) => {
+    const sp = el.querySelector('span'), t = cur.result.segments[i].text;
+    const hit = !q || t.toLowerCase().includes(q);
+    el.style.display = hit ? '' : 'none';
+    sp.innerHTML = q && hit ? esc(t).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => `<mark>${m}</mark>`) : esc(t);
+  });
+};
+init();
+</script>
+</body>
+</html>

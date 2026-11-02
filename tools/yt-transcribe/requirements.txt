@@ -1,0 +1,6 @@
+youtube-transcript-api>=1.2.4
+yt-dlp>=2026.10.26
+faster-whisper>=1.2.1
+fastapi>=0.115
+uvicorn>=0.30
+requests>=2.31
