@@ -232,6 +232,7 @@ ul.res{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:12.5px;
     <section class="sheet" id="pauseSheet" hidden>
       <div class="card">
         <h2>일시정지</h2>
+        <p class="lede" id="pauseNote"></p>
         <div class="btns"><button class="primary" id="resumeBtn">계속하기</button><button class="ghost" id="quitBtn">경기 그만두기</button></div>
       </div>
     </section>
@@ -359,7 +360,7 @@ function applyAll() {
   for (const [tid, sq] of Object.entries(SQUADS)) {
     const c = S.club && S.club.team === tid ? S.club : null;
     for (const p of sq) {
-      const L = c ? c.lvl[p.id] || 0 : 0, a = c ? c.add[p.id] || {} : {};
+      const L = c ? c.lvl[p.id] || 0 : rivalLevel(), a = c ? c.add[p.id] || {} : {};
       p.bat = { tim: cap(p.base.bat.tim + 2 * L + (a.tim || 0)), pow: cap(p.base.bat.pow + 2 * L + (a.pow || 0)), run: cap(p.base.bat.run + 2 * L + (a.run || 0)) };
       p.bowl = { ...p.base.bowl, skl: cap(p.base.bowl.skl + 2 * L + (a.skl || 0)), kmh: p.base.bowl.kmh + L };
       p.lvl = L; p.xp = c ? c.xp[p.id] || 0 : 0; p.ovr = calcOvr(p);
@@ -368,6 +369,8 @@ function applyAll() {
     sq.sort((x, y) => ord && ord.length === sq.length ? ord.indexOf(x.id) - ord.indexOf(y.id) : x.baseOrder - y.baseOrder);
   }
 }
+// 라이벌 구단도 대항전 시즌이 끝날 때마다 한 단계씩 강해진다 (최대 +8)
+function rivalLevel() { return Math.min(8, store.get('nc.cupSeason', 0)); }
 function setClub(id) { S.club = loadClub(id); applyAll(); }
 function enhance(pid) {
   const c = S.club, L = c.lvl[pid] || 0;
@@ -394,7 +397,9 @@ function growthAttr(p) {
 }
 function grantRewards(won, potm) {
   const c = S.club; if (!c || c.team !== M.me) return null;
-  let coins = won ? 120 : 60; if (potm.p.team === c.team) coins += 30;
+  // 친선 경기는 '결과만'으로 몇 초 만에 돌릴 수 있으므로 보상은 대항전의 1/4, 경험치는 절반
+  const k = M.kind === 'cup' ? 1 : 0.25;
+  let coins = Math.round(((won ? 120 : 60) + (potm.p.team === c.team ? 30 : 0)) * k);
   const st = {};
   for (const inn of [...M.inns, ...M.so]) {
     inn.card.forEach(x => { if (x.batted) (st[x.pid] = st[x.pid] || { r: 0, w: 0, bb: 0 }).r += x.r; });
@@ -403,7 +408,7 @@ function grantRewards(won, potm) {
   const growth = [];
   for (const p of SQUADS[c.team]) {
     const s = st[p.id] || { r: 0, w: 0, bb: 0 };
-    c.xp[p.id] = (c.xp[p.id] || 0) + 12 + s.r + 20 * s.w + Math.floor(s.bb / 6) * 3 + (won ? 5 : 0);
+    c.xp[p.id] = (c.xp[p.id] || 0) + Math.round((12 + s.r + 20 * s.w + Math.floor(s.bb / 6) * 3 + (won ? 5 : 0)) * (M.kind === 'cup' ? 1 : 0.5));
     while (c.xp[p.id] >= 100) {
       c.xp[p.id] -= 100; const a = growthAttr(p);
       (c.add[p.id] = c.add[p.id] || {})[a] = (c.add[p.id][a] || 0) + 1;
@@ -1024,6 +1029,8 @@ function runInnings(inn, then) {
 function startMatch(kind, me, opp, fmtKey, fixture = null, label = '') {
   audioInit();
   M = { kind, me, opp, fmtKey, fmt: FORMATS[fmtKey], balls: FORMATS[fmtKey].overs * 6, inns: [], so: [], fixture, label, watch: S.watch };
+  S.manual = false;   // '직접 치기'는 경기마다 꺼진 상태로 시작
+  if (kind === 'cup' && fixture) { fixture.live = true; saveCup(); }
   $('menu').hidden = true;
   const meWins = Math.random() < 0.5, A = team(me), B = team(opp);
   const head = `<p class="eyebrow">${matchLabel()}</p><p class="vs"><span style="--tc:${A.color}">${A.name}</span><em>vs</em><span style="--tc:${B.color}">${B.name}</span></p>`;
@@ -1246,21 +1253,30 @@ function cupAdvance(c) {
       if (!c.fin.res && !mine(c.fin)) c.fin.res = cupSim(c, c.fin, false);
       if (!c.fin.res) return;
       c.stage = 'done'; c.champion = c.fin.res.winner;
-      store.set('nc.cupSeason', c.season);
+      store.set('nc.cupSeason', c.season); applyAll();
       if (c.champion === c.me) { const t = store.get('nc.titles', {}); t[c.me] = (t[c.me] || 0) + 1; store.set('nc.titles', t); }
     } else return;
   }
 }
 function cupRecordUser(w) {
   const c = S.cup, fx = M.fixture; if (!c || !fx || fx.res) return;
-  fx.res = { winner: w, line: resultLine(M.inns[0], M.inns[1], M.so, w) };
+  fx.res = { winner: w, line: resultLine(M.inns[0], M.inns[1], M.so, w) }; delete fx.live;
   if (c.stage === 'league') recordLeague(c, M.inns[0], M.inns[1], w);
   const before = c.stage;
   cupAdvance(c); saveCup();
   return cupBonus(c, before);
 }
+// 시작한 대항전 경기를 그만두거나 새로고침으로 빠져나가면 기권패. NRR에는 넣지 않는다.
+function cupForfeit(c, fx) {
+  const opp = fx.a === c.me ? fx.b : fx.a;
+  fx.res = { winner: opp, line: `${team(c.me).city} 기권 → ${team(opp).city} 승`, forfeit: true }; delete fx.live;
+  if (c.stage === 'league') { const a = c.table[c.me], b = c.table[opp]; a.p++; a.l++; b.p++; b.w++; b.pts += 2; }
+  const before = c.stage; cupAdvance(c); saveCup(); cupBonus(c, before);
+  S.forfeitNote = `${team(opp).name}전을 중도에 나가 기권패로 처리됐습니다.`;
+}
 function openCup() {
   S.cup = store.get('nc.cup', null);
+  if (S.cup) { const fx = cupUserFixture(S.cup); if (fx && fx.live) cupForfeit(S.cup, fx); }
   if (!S.cup || S.cup.stage === 'done') { S.cup = newCup(S.me, S.fmt); saveCup(); }
   if (S.me !== S.cup.me) { S.me = S.cup.me; store.set('nc.me', S.me); }
   setClub(S.me);
@@ -1272,6 +1288,7 @@ function cupHub() {
     return `<tr class="${id === c.me ? 'me' : ''}${i === 3 ? ' cut' : ''}"><td>${i + 1}</td><td><i class="dot" style="background:${team(id).color}"></i>${team(id).name}</td><td>${r.p}</td><td>${r.w}</td><td>${r.l}</td><td><b>${r.pts}</b></td><td>${fmtNrr(nrr(r))}</td></tr>`; }).join('')}</tbody></table></div>`;
   const done = c.rounds.map((rd, i) => rd.filter(m => m.res).map(m => `<li><b>R${i + 1}</b> ${m.res.line}</li>`).join('')).reverse().join('');
   const ko = [...c.ko, ...(c.fin ? [c.fin] : [])].map(m => `<li><b>${m.label}</b> ${m.res ? m.res.line : `${team(m.a).city} vs ${team(m.b).city}`}</li>`).join('');
+  const note = S.forfeitNote; S.forfeitNote = null;
   let status, acts = { menu: toMenu, squad: () => openSquad(c.me, cupHub), reset: () => showPanel(`<h2>새 대항전?</h2><p class="lede">지금 시즌 기록이 사라집니다. 새 시즌은 메뉴에서 고른 지역과 경기 방식으로 시작해요.</p><div class="btns"><button class="primary" data-act="yes">새로 시작</button><button class="ghost" data-act="no">취소</button></div>`, { yes: () => { S.cup = newCup(S.me, S.fmt); saveCup(); cupHub(); }, no: cupHub }) };
   let main = '';
   if (fx) {
@@ -1286,7 +1303,8 @@ function cupHub() {
     acts.next = () => { S.cup = newCup(S.me, S.fmt); saveCup(); cupHub(); };
   }
   showPanel(`<p class="eyebrow">지역 대항전 · 시즌 ${c.season} · ${FORMATS[c.fmt].label} · ${cupStage(c)}</p>
-    <h2>${c.stage === 'done' ? '시즌 종료' : team(c.me).name}</h2><p class="lede">${status}</p>${table}
+    <h2>${c.stage === 'done' ? '시즌 종료' : team(c.me).name}</h2>${note ? `<p class="toast drop">${note}</p>` : ''}<p class="lede">${status}</p>${table}
+    <p class="small">라이벌 구단 전력 +${rivalLevel()} (지난 시즌 수만큼 강화, 최대 +8)</p>
     <p class="small">승 2점 · 패 0점, 동률이면 NRR(넷 런레이트). 동점 경기는 슈퍼 오버로 가린다. 상위 4팀 준결승(1위–4위, 2위–3위) 후 결승.</p>
     ${ko ? `<ul class="res">${ko}</ul>` : ''}${done ? `<details class="inn"><summary>리그 결과</summary><ul class="res">${done}</ul></details>` : ''}
     <div class="btns">${main}<button class="ghost" data-act="squad">선수 카드</button><button class="ghost" data-act="reset">새 대항전</button><button class="ghost" data-act="menu">메뉴</button></div>`, acts, true);
@@ -1870,10 +1888,13 @@ function togglePause(force) {
   if (S.demo || S.phase === 'end') return;
   S.paused = force === true ? true : !S.paused;
   $('pauseSheet').hidden = !S.paused;
+  const cupLive = M && M.kind === 'cup' && M.fixture && !M.fixture.res;
+  $('pauseNote').textContent = cupLive ? '대항전 경기를 그만두면 기권패로 기록됩니다.' : '';
+  $('quitBtn').textContent = cupLive ? '기권하고 나가기' : '경기 그만두기';
 }
 $('pauseBtn').addEventListener('click', () => togglePause());
 $('resumeBtn').addEventListener('click', () => togglePause());
-$('quitBtn').addEventListener('click', () => toMenu());
+$('quitBtn').addEventListener('click', () => { if (M && M.kind === 'cup' && M.fixture && !M.fixture.res && S.cup) cupForfeit(S.cup, M.fixture); toMenu(); });
 $('soundBtn').addEventListener('click', () => setMuted(!muted));
 
 /* ---------- menu ---------- */
@@ -1926,10 +1947,11 @@ setClub(S.me); init3D(); resize(); renderMenu(); startDemo(); setAim(0);
 let last = performance.now();
 function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  update(dt * S.speed); frame(dt * S.speed);
+  const sp = !S.demo && S.autoBat ? S.speed : 1;   // 직접 칠 때·네트·시범 경기는 항상 1배
+  update(dt * sp); frame(dt * sp);
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
-window.__nc = { AI, makeDelivery, computeHit, simulateShot, resolveShot, aiPlan, aiTiming, prepBall, mkWicket, S, SQUADS, PLAYERS, newInnings, simInnings, simMatch, recordBall, doSwing, newCup, cupAdvance, cupUserFixture, recordLeague, standings, get M() { return M; } };
+window.__nc = { cupForfeit, rivalLevel, applyAll, AI, makeDelivery, computeHit, simulateShot, resolveShot, aiPlan, aiTiming, prepBall, mkWicket, S, SQUADS, PLAYERS, newInnings, simInnings, simMatch, recordBall, doSwing, newCup, cupAdvance, cupUserFixture, recordLeague, standings, get M() { return M; } };
 })();
 </script>
