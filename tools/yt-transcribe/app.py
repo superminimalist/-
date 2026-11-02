@@ -356,6 +356,43 @@ FORMATS = {"txt": "txt", "tstxt": "txt", "srt": "srt", "vtt": "vtt", "json": "js
 
 # ---------------------------------------------------------------- web
 
+def _icon_png(size: int = 180) -> bytes:
+    """홈 화면 아이콘 — 빨간 바탕 + 흰 재생 삼각형 (외부 파일 없이 생성)."""
+    import struct
+    import zlib
+
+    x0, x1, h, cy = 0.38 * size, 0.70 * size, 0.20 * size, size / 2
+    raw = bytearray()
+    for y in range(size):
+        raw.append(0)
+        for x in range(size):
+            inside = x0 <= x <= x1 and abs(y + 0.5 - cy) <= h * (x1 - x) / (x1 - x0)
+            raw += b"\xff\xff\xff" if inside else b"\xc4\x30\x2b"
+
+    def chunk(t: bytes, d: bytes) -> bytes:
+        return struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xFFFFFFFF)
+
+    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", size, size, 8, 2, 0, 0, 0))
+            + chunk(b"IDAT", zlib.compress(bytes(raw), 9)) + chunk(b"IEND", b""))
+
+
+def lan_addresses() -> list[str]:
+    import socket
+    ips = set()
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(("10.255.255.255", 1))  # 패킷 안 나감, 기본 인터페이스 IP만 얻음
+            ips.add(s.getsockname()[0])
+    except OSError:
+        pass
+    try:
+        for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
+            ips.add(info[4][0])
+    except OSError:
+        pass
+    return sorted(ip for ip in ips if not ip.startswith("127."))
+
+
 def build_app():
     from fastapi import FastAPI, HTTPException
     from fastapi.responses import FileResponse, Response
@@ -373,6 +410,20 @@ def build_app():
     @app.get("/")
     def index():
         return FileResponse(HERE / "index.html")
+
+    icon = _icon_png()
+
+    @app.get("/icon.png")
+    def icon_png():
+        return Response(icon, media_type="image/png", headers={"Cache-Control": "max-age=86400"})
+
+    @app.get("/manifest.webmanifest")
+    def manifest():
+        return Response(json.dumps({
+            "name": "YT Transcript", "short_name": "Transcript", "start_url": "/", "display": "standalone",
+            "background_color": "#f6f6f4", "theme_color": "#c4302b",
+            "icons": [{"src": "/icon.png", "sizes": "180x180", "type": "image/png"}],
+        }), media_type="application/manifest+json")
 
     @app.get("/api/config")
     def config():
@@ -466,11 +517,15 @@ def main():
         return
 
     import uvicorn
-    url = f"http://{a.host}:{a.port}"
+    lan = a.host in ("0.0.0.0", "::")
+    url = f"http://{'127.0.0.1' if lan else a.host}:{a.port}"
     if not a.no_browser:
         import webbrowser
         threading.Timer(1.0, lambda: webbrowser.open(url)).start()
     print(f"→ {url}")
+    if lan:
+        for ip in lan_addresses():
+            print(f"→ 폰에서 (같은 와이파이): http://{ip}:{a.port}")
     uvicorn.run(build_app(), host=a.host, port=a.port, log_level="warning")
 
 

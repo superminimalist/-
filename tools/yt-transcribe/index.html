@@ -2,7 +2,14 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Transcript">
+<meta name="theme-color" content="#c4302b">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icon.png">
 <title>YT Transcript</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600&family=Noto+Nastaliq+Urdu&family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
@@ -49,6 +56,20 @@ mark{background:#ffe48a;color:#000}
 .hist div:hover{color:var(--acc)}
 .hist small{color:var(--mut);flex:none}
 .hidden{display:none}
+@media (max-width:600px){
+  .wrap{padding:calc(12px + env(safe-area-inset-top)) 12px calc(60px + env(safe-area-inset-bottom))}
+  .card{padding:12px}
+  input[type=text]{min-width:0;flex-basis:100%}
+  .row > button.pri,#pasteBtn{flex:1}
+  .opts{gap:8px}
+  .opts label{flex:1 1 100%;justify-content:space-between}
+  .opts label select{flex:1;max-width:70%}
+  .opts label:has(input[type=checkbox]){justify-content:flex-start}
+  select,button,.tools input{font-size:16px}
+  .tools input{flex-basis:100%}
+  .seg{gap:8px}
+  .seg a{min-width:44px}
+}
 .toast{position:fixed;bottom:20px;inset-inline-start:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.on{opacity:1}
 </style>
@@ -60,6 +81,7 @@ mark{background:#ffe48a;color:#000}
   <div class="card">
     <div class="row">
       <input id="url" type="text" placeholder="유튜브 링크 붙여넣기 (붙여넣으면 바로 시작)" autocomplete="off" autofocus>
+      <button id="pasteBtn">붙여넣기</button>
       <button id="go" class="pri">받아쓰기</button>
     </div>
     <div class="row opts">
@@ -90,6 +112,7 @@ mark{background:#ffe48a;color:#000}
     </div>
     <div class="tools">
       <button id="copy">복사</button>
+      <button id="share" class="hidden">공유</button>
       <button id="tsToggle">타임스탬프 숨기기</button>
       <button data-fmt="txt">TXT</button>
       <button data-fmt="tstxt">TXT+시간</button>
@@ -133,6 +156,13 @@ async function init() {
   for (const id of ['lang', 'mode', 'model']) $('#' + id).onchange = e => store.set(id, e.target.value);
   $('#translate').onchange = e => store.set('translate', e.target.checked);
   refreshHist();
+  const q = new URLSearchParams(location.search);
+  if (q.get('lang') && cfg.langs[q.get('lang')]) $('#lang').value = q.get('lang');
+  if (q.get('url')) {  // iOS 단축어/공유 시트: /?url=<링크>
+    $('#url').value = q.get('url');
+    history.replaceState(null, '', location.pathname);
+    return start();
+  }
   const last = store.get('lastJob', null);
   if (last) fetch('/api/jobs/' + last).then(r => r.ok ? r.json() : null).then(j => j && show(j));
 }
@@ -197,10 +227,21 @@ $('#url').addEventListener('paste', e => {
   const t = (e.clipboardData || window.clipboardData).getData('text');
   if (YT_RE.test(t) || /^[\w-]{11}$/.test(t.trim())) setTimeout(start, 0);
 });
-$('#copy').onclick = async () => {
-  if (!cur) return;
-  const txt = cur.result.segments.map(s => plain ? s.text : `[${clock(s.start)}] ${s.text}`).join(plain ? ' ' : '\n');
-  await navigator.clipboard.writeText(txt); toast('복사됨');
+const curText = () => cur.result.segments.map(s => plain ? s.text : `[${clock(s.start)}] ${s.text}`).join(plain ? ' ' : '\n');
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); return true; } catch {}
+  // http(비보안) 접속이면 clipboard API 없음 → 구식 방식
+  const ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;opacity:0'; document.body.appendChild(ta);
+  ta.select(); ta.setSelectionRange(0, t.length);
+  const ok = document.execCommand('copy'); ta.remove(); return ok;
+}
+$('#copy').onclick = async () => { if (cur) toast(await copyText(curText()) ? '복사됨' : '복사 실패'); };
+if (navigator.share) $('#share').classList.remove('hidden');
+$('#share').onclick = () => { if (cur) navigator.share({ title: cur.result.title, text: curText() }).catch(() => {}); };
+$('#pasteBtn').onclick = async () => {
+  try { const t = (await navigator.clipboard.readText()).trim(); if (t) { $('#url').value = t; start(); } }
+  catch { $('#url').focus(); toast('입력창을 길게 눌러 붙여넣기'); }
 };
 $('#tsToggle').onclick = () => { plain = !plain; store.set('plain', plain); if (cur) show(cur); };
 document.querySelectorAll('[data-fmt]').forEach(b => b.onclick = () => { if (cur) location.href = `/api/jobs/${cur.id}/download?fmt=${b.dataset.fmt}`; });
