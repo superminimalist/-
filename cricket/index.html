@@ -93,7 +93,11 @@ h2.win{color:var(--turf)}h2.loss{color:var(--out)}h2.tie{color:var(--lamp)}
 .hint{display:none}
 @media (min-width:860px) and (hover:hover){.hint{display:flex;align-items:center;color:var(--mute);font-size:12px;padding:0 6px;max-width:300px;line-height:1.4}}
 @media (max-width:520px){.score{font-size:26px}.cell b{font-size:16px}#rail .aim{min-width:52px;padding:6px 8px}#rail #loftBtn{padding:6px 8px}#rail #swingBtn{font-size:19px}.stats dd{font-size:20px}.card{padding:18px}}
-@media (prefers-reduced-motion:reduce){#banner.show{animation:none}}
+#comm{position:absolute;left:12px;right:12px;bottom:12px;z-index:3;display:flex;justify-content:center;pointer-events:none}
+#comm .bub{max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:8px 13px;font-size:13.5px;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,.45);transition:opacity .25s,transform .25s}
+#comm b{color:var(--lamp);font-size:11px;letter-spacing:.08em;display:block}
+#comm.off .bub{opacity:0;transform:translateY(8px)}
+@media (prefers-reduced-motion:reduce){#banner.show{animation:none}#comm .bub{transition:none}}
 </style>
 
 <div id="app">
@@ -113,10 +117,11 @@ h2.win{color:var(--turf)}h2.loss{color:var(--out)}h2.tie{color:var(--lamp)}
       <button id="pauseBtn">일시정지</button>
     </div>
     <div id="banner"><div class="big"></div><div class="sub"></div></div>
+    <div id="comm" class="off" aria-live="polite"><div class="bub"><b id="commWho"></b><span id="commTxt"></span></div></div>
 
     <section class="sheet" id="menu">
       <div class="card">
-        <p class="eyebrow">플러드라이트 경기 · 2오버 추격전부터 네트 연습까지</p>
+        <p class="eyebrow">해설진 대기 중 · 강아지 난입 주의 · 배트 꽉 잡을 것</p>
         <h1>나이트 크리즈</h1>
         <p class="lede">볼러가 공을 놓는 순간부터 피치에 튀고 배트에 닿기까지 1초 남짓. 바운스 지점을 읽고, 방향을 정하고, 정확한 순간에 휘두르세요.</p>
         <div class="modes" id="modes"></div>
@@ -217,6 +222,57 @@ const FIELD = [
   const x = f.x ?? f.d * Math.sin(f.a), y = f.y ?? f.d * Math.cos(f.a);
   return { spd: 7.1, react: 0.3, reach: 1.25, ...f, hx: x, hy: y };
 });
+
+/* ---------- comedy desk ---------- */
+const VOICES = ['캐스터 만수', '해설 둥치'];
+const LINES = {
+  six: ['저 공은 지금 대기권 돌파 중입니다!', '관중석 3층 치킨이 방금 공에 맞았습니다. 치킨은 무사합니다.', '볼러 표정 보세요. 집에 가고 싶은 얼굴이에요.', '공 찾으러 간 볼보이, 아직 안 돌아왔습니다.', '저건 크리켓이 아니라 택배 발송이에요. 관중석 직배송!'],
+  bigsix: ['주차장입니다! 누군가의 차 앞유리가 오늘 운이 없네요.', '방금 그 공, 옆 동네 경기에서 득점 인정됐답니다.', '공이 위성 궤도에 진입했습니다. NASA에서 전화 왔어요.'],
+  four: ['총알처럼 펜스로! 야수는 그냥 손 흔들어 줍니다.', '야수가 뛰긴 뛰었어요. 마음만요.', '공이 경로 탐색을 마치고 펜스로 안내되었습니다.', '광고판이 아파합니다. 광고주도 아파합니다.'],
+  caught: ['잡았습니다! 타자, 하늘을 원망합니다.', '공이 야수 손에 쏙. 새벽배송보다 정확하네요.', '타자가 배트를 쳐다봅니다. 배트 잘못 아닙니다.', '띄우면 잡힌다, 이건 뉴턴도 알던 사실이죠.'],
+  dropped: ['떨어뜨렸어요! 손에 버터 바르고 나왔나요?', '야수, 공이랑 하이파이브만 하고 보내줬습니다.', '저 야수 오늘 저녁 메뉴는 반성문입니다.'],
+  bowled: ['와장창! 스텀프가 이사 갑니다.', '배트와 패드 사이로 트럭 한 대가 지나갈 틈이었어요.', '베일이 관중석까지 날아갔습니다. 기념품 되겠네요.'],
+  lbw: ['심판 손가락이 올라갑니다. 저 손가락은 자비가 없어요.', '패드로 막았는데… 패드는 배트가 아닙니다.', '타자: "다리가 먼저 나갔어요." 심판: "알아요."'],
+  playedon: ['자기 공으로 자기 스텀프를. 셀프 아웃 장인입니다.', '인사이드 엣지 홈쇼핑! 스텀프까지 무료 배송입니다.'],
+  runout: ['둘이 서로 "가!" "와!" 하다가… 네, 아웃입니다.', '달리기는 열심히 했어요. 방향이 틀렸을 뿐.', '논스트라이커가 지금 친구 손절 각을 재고 있습니다.'],
+  wide: ['와이드! 볼러가 타자 말고 관중을 노렸네요.', '공이 혼자 산책을 떠났습니다.', '저건 크리켓 공이 아니라 부메랑이었나요?'],
+  dot: ['휘이잉~ 시원하게 바람만 갈랐습니다.', '배트로 선풍기 놀이 중입니다.', '공 지나간 다음에 휘둘렀어요. 추모 스윙이네요.'],
+  left: ['멋지게 흘려보냅니다. 아니면 그냥 못 본 걸까요.', '타자, 공과 눈 마주치기를 거부합니다.', '전략적 무시. 연애에서도 잘 안 통하는 기술이죠.'],
+  block: ['정면으로! 야수가 몸으로 막습니다. 내일 멍 들겠네요.', '수비 성공. 타자는 땅을 노려봅니다. 땅도 억울합니다.', '야수한테 공 선물 배달 완료.'],
+  runs1: ['한 점 줍줍.', '살금살금 한 점. 고양이 같은 주루입니다.'],
+  runs2: ['두 점! 다리가 고생합니다.', '두 점 왕복. 오늘 만보 채우겠어요.'],
+  runs3: ['세 점! 타자들 숨 넘어갑니다. 산소 준비해주세요.', '세 번 왕복! 이건 크리켓이 아니라 체력장이에요.'],
+  batfly: ['배트가 날아갑니다! 포인트 야수 긴급 회피!', '공 대신 배트를 쳐냈어요. 이것도 신기록입니다.', '배트가 탈출했습니다. 타자에게 정이 떨어졌나 봐요.'],
+  dog: ['잠깐만요, 경기장에 강아지가 난입했습니다! 미드위켓보다 빠릅니다!', '강아지가 피치를 점검하고 지나갑니다. 경기 진행요원보다 성실하네요.', '저 강아지 오늘 MVP 후보입니다. 아무것도 안 했지만요.'],
+  over: ['볼러 교체. 전 볼러는 얼음찜질 하러 갑니다.', '새 볼러 등장. 자신감 50%, 불안 50%입니다.', '오버 끝. 해설진은 과자 하나 뜯겠습니다.'],
+  perfect: ['교과서 스윙! 교과서가 감동해서 울고 있습니다.']
+};
+const ROAST = {
+  win: ['동네 전설이 탄생했습니다. 내일 빵집에서 크루아상 공짜.', '상대 팀 감독이 조용히 이력서를 쓰기 시작했습니다.', '해설 둥치, 감격해서 마이크를 삼킬 뻔했습니다.'],
+  loss: ['괜찮아요. 배트도 오늘 컨디션이 안 좋았대요.', '해설진 추천: 다음엔 공을 보고 쳐보세요.', '볼러가 사인해 달라고 합니다. 고마워서요.'],
+  tie: ['둘 다 이기고 둘 다 졌습니다. 철학적인 결과네요.'],
+  done: ['네트 코치가 박수를 칩니다. 반은 진심이에요.', '공 기계가 지쳐서 퇴근했습니다.']
+};
+let voice = 0, commTimer = 0;
+const usedLines = new Set();
+function say(key, force) {
+  const pool = LINES[key]; if (!pool) return;
+  if (S.demo && !force && Math.random() < 0.45) return;
+  let opts = pool.filter(l => !usedLines.has(l));
+  if (!opts.length) { pool.forEach(l => usedLines.delete(l)); opts = pool; }
+  const line = pick(opts); usedLines.add(line);
+  $('commWho').textContent = VOICES[voice]; voice ^= 1;
+  $('commTxt').textContent = line;
+  const c = $('comm'); c.classList.remove('off');
+  clearTimeout(commTimer); commTimer = setTimeout(() => c.classList.add('off'), 3800);
+}
+function commentKey(o) {
+  if (S.batFly) return 'batfly';
+  if (o.type === 'dot') return o.left ? 'left' : 'dot';
+  if (o.type === 'runs') return o.dropped ? 'dropped' : o.runs ? 'runs' + Math.min(3, o.runs) : 'block';
+  if (o.type === 'six' && o.carry > 82) return 'bigsix';
+  return o.type;
+}
 
 /* ---------- state ---------- */
 const S = {
@@ -368,7 +424,8 @@ function newMatch(demo) {
   hud();
 }
 function startBall(wait) {
-  Object.assign(S, { phase: 'ready', pt: 0, wait, D: null, swing: null, shot: null, outcome: null, applied: false, stumpHit: null, contact: false });
+  Object.assign(S, { phase: 'ready', pt: 0, wait, D: null, swing: null, shot: null, outcome: null, applied: false, stumpHit: null, contact: false, whiff: false, batFly: null });
+  if (!(S.dog && S.clock - S.dog.t0 < 5.5) && Math.random() < 0.1) { S.dog = { t0: S.clock, dir: Math.random() < 0.5 ? -1 : 1, z: rnd(24, 36) }; setTimeout(() => say('dog', true), 600); }
   if (S.demo) { S.aim = rnd(-1.2, 1.2); S.loft = Math.random() < 0.4; }
 }
 function doSwing() {
@@ -376,6 +433,7 @@ function doSwing() {
   const D = S.D, err = S.pt - (D.tc - LEAD), loft = S.loft || S.loftHold;
   const res = computeHit(D, err, S.aim, loft);
   S.swing = { t0: S.clock, err, res, aim: S.aim, loft };
+  if (res.miss && !res.reach && Math.abs(err) > DIFF[S.diff].win * 2.2 && Math.random() < 0.35) S.batFly = { t0: S.clock + 0.2, dir: err < 0 ? -1 : 1 };
   if (!S.demo) {
     const ms = Math.round(err * 1000), w = DIFF[S.diff].win;
     let txt, col;
@@ -406,18 +464,23 @@ function update(dt) {
       const res = S.swing && S.swing.res;
       if (!S.contact && S.pt >= D.tc && res && !res.miss) {
         S.contact = true;
-        if (res.playedOn) { sfx('crack'); S.stumpHit = { t0: S.clock }; sfx('stumps'); finish({ type: 'playedon' }); break; }
+        if (res.playedOn) { sfx('crack'); S.stumpHit = { t0: S.clock }; sfx('stumps'); pow('틱… 와장창!', 0, 0.9, 0, '#ff6153', 42); finish({ type: 'playedon' }); break; }
         sfx('crack');
+        const big = res.q >= 0.95 && !res.edge;
+        pow(big ? '따아악!!' : res.edge ? '틱!' : '딱!', D.pc.x, D.pc.y + 0.4, ZC, big ? '#ffcf5a' : '#f3f1e6', big ? 56 : 42);
+        if (big && !S.demo && Math.random() < 0.25) setTimeout(() => say('perfect'), 150);
         const sim = simulateShot(res);
         S.shot = { sim, res, out: resolveShot(sim) };
         S.phase = 'shot'; S.pt = 0;
         break;
       }
+      if (!S.whiff && S.swing && S.swing.res.miss && S.pt >= D.tc) { S.whiff = true; pow(S.batFly ? '앗, 배트!' : '휘잉~', -0.1, 1.5, 1.25, '#9fd4ff', 36); }
       if (!S.contact && S.pt >= D.ts) {
         S.contact = true;
         if (D.hitsStumps) {
           const lbw = !S.swing ? Math.random() < 0.45 : Math.random() < 0.2;
-          if (!lbw) { S.stumpHit = { t0: S.clock }; sfx('stumps'); }
+          if (!lbw) { S.stumpHit = { t0: S.clock }; sfx('stumps'); pow('와장창!', 0, 0.9, 0, '#ff6153', 50); }
+          else pow('어이쿠!', -0.45, 0.5, 1.25, '#ffcf5a', 40);
           S.lbwPending = lbw;
         }
       }
@@ -442,6 +505,7 @@ function update(dt) {
 }
 function finish(o) {
   S.outcome = o; S.phase = 'dead'; S.pt = 0; S.applied = false;
+  say(commentKey(o));
   if (S.demo) return;
   const [big, sub, k] = describe(o);
   const b = $('banner');
@@ -502,6 +566,7 @@ function next() {
     S.overEnd = false; S.overBalls = [];
     S.bowlerIdx = (S.bowlerIdx + 1) % BOWLERS.length; S.bowler = BOWLERS[S.bowlerIdx];
     S.phase = 'overbreak'; S.pt = 0;
+    setTimeout(() => say('over', true), 400);
     const b = $('banner'); b.className = 'show kD';
     b.querySelector('.big').textContent = '오버 종료';
     b.querySelector('.sub').textContent = `다음 볼러 ${S.bowler.name} · ${S.bowler.label}`;
@@ -525,6 +590,7 @@ function showEnd(res) {
   else if (res === 'tie') { t.textContent = '동점'; $('endSub').textContent = `${S.runs}/${S.wkts}. 한 점이 모자라 슈퍼 오버 각이다.`; }
   else if (res === 'loss') { t.textContent = '패배'; $('endSub').textContent = `${S.runs}/${S.wkts} — 목표 ${S.target}까지 ${S.target - S.runs}점 모자랐다.`; }
   else { t.textContent = `${S.runs}점`; $('endSub').textContent = `네트 연습 종료. ${S.balls}볼 동안 ${S.wkts}번 아웃.`; }
+  $('endSub').textContent += ' ' + pick(ROAST[res] || ROAST.done);
   const sr = st.faced ? Math.round(S.runs / st.faced * 100) : 0;
   const items = [['득점', `${S.runs}`], ['상대한 볼', `${st.faced}`], ['스트라이크 레이트', `${sr}`], ['포', `${st.fours}`], ['식스', `${st.sixes}`], ['최장 식스', st.longest ? `${st.longest}m` : '—']];
   $('endStats').innerHTML = items.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
@@ -722,8 +788,8 @@ function drawStumps(z, hit) {
   } else line3([-0.11, 0.725, z], [0.11, 0.725, z], 0.025, '#f2e7cf');
 }
 // figure painted in metres around feet; y up
-function fig(x, z, fn) {
-  const p = P(x, 0, z); if (!p) return;
+function fig(x, z, fn, lift = 0) {
+  const p = P(x, lift, z); if (!p) return;
   ctx.save(); ctx.translate(p.x, p.y); ctx.scale(p.s, -p.s); fn(); ctx.restore();
 }
 function shadowAt(x, z, rw) { const p = P(x, 0, z); if (!p) return; ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.beginPath(); ctx.ellipse(p.x, p.y, rw * p.s, rw * p.s * 0.28, 0, 0, Math.PI * 2); ctx.fill(); }
@@ -754,6 +820,8 @@ function drawBowler() {
   else z = L - 2.1;
   const x = 0.5;
   shadowAt(x, z, 0.35);
+  const o = S.outcome, cheer = S.phase === 'dead' && !S.shot && o && ['bowled', 'lbw', 'playedon'].includes(o.type);
+  if (cheer) { const j = Math.abs(Math.sin(S.pt * 9)) * 0.45; fig(x, z, () => drawPerson(b.kit, { run: S.pt * 20, arm: Math.PI + Math.sin(S.pt * 18) * 0.3, arm2: Math.PI - Math.sin(S.pt * 18) * 0.3, cap: '#0b1424' }), j); return; }
   fig(x, z, () => {
     drawPerson(b.kit, { run, arm: -arm, arm2: 0.4, cap: '#0b1424' });
     if (inHand) { const a = -arm, hx = -0.2 - Math.sin(a) * 0.6, hy = 1.42 - Math.cos(a) * 0.6; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, hy, 0.05, 0, Math.PI * 2); ctx.fill(); }
@@ -786,6 +854,7 @@ function drawBatsman() {
     rr(0.08, 1.6, 0.14, 0.16, 0.03, '#2a3446');
     const { a, hx, hy } = batPose();
     limb(-0.22, 1.45, hx, hy, 0.1, '#1b4fa0'); limb(0.22, 1.45, hx + 0.03, hy + 0.03, 0.1, '#1b4fa0');
+    if (S.batFly && S.clock > S.batFly.t0) { rr(hx - 0.06, hy - 0.06, 0.12, 0.12, 0.04, '#f2f2f2'); return; }
     ctx.save(); ctx.translate(hx, hy); ctx.rotate(a);
     rr(-0.017, -0.32, 0.034, 0.32, 0.01, '#2b2b2b');
     rr(-0.055, -0.88, 0.11, 0.57, 0.03, '#e6c98f');
@@ -823,6 +892,46 @@ function drawAim() {
   const tip = P(0.1 + sx * 12, 0, ZC + cz * 12);
   if (tip) { ctx.fillStyle = loft ? '#7fe0ff' : '#ffcf5a'; ctx.beginPath(); ctx.arc(tip.x, tip.y, 4, 0, Math.PI * 2); ctx.fill(); }
 }
+function drawFlyingBat() {
+  const u = Math.max(0, S.clock - S.batFly.t0), dir = S.batFly.dir;
+  const tLand = 1.35, uu = Math.min(u, tLand);
+  const x = -0.3 + dir * 3.2 * uu, z = 1.25 + 8 * uu, y = Math.max(0, 1.4 + 6.2 * uu - 4.9 * uu * uu);
+  const p = P(x, y, z); if (!p) return;
+  if (y > 0) shadowAt(x, z, 0.3);
+  ctx.save(); ctx.translate(p.x, p.y); ctx.scale(p.s, -p.s); ctx.rotate(u < tLand ? u * 15 * dir : 1.5);
+  rr(-0.017, 0, 0.034, 0.32, 0.01, '#2b2b2b'); rr(-0.055, -0.56, 0.11, 0.57, 0.03, '#e6c98f');
+  ctx.restore();
+}
+function batFlyZ() { const uu = Math.min(Math.max(0, S.clock - S.batFly.t0), 1.35); return 1.25 + 8 * uu; }
+function drawDog() {
+  const age = S.clock - S.dog.t0, d = S.dog, x = d.dir * (-36 + age * 15);
+  shadowAt(x, d.z, 0.6);
+  fig(x, d.z, () => {
+    ctx.scale(d.dir * 3.6, 3.6);
+    const leg = Math.sin(age * 24) * 0.12, fur = '#a8682f', dark = '#7a4a22';
+    for (const [lx, s] of [[-0.25, 1], [-0.15, -1], [0.18, 1], [0.28, -1]]) limb(lx, 0.25, lx + leg * s, 0.02, 0.06, dark);
+    limb(-0.34, 0.36, -0.52, 0.5 + Math.sin(age * 34) * 0.1, 0.05, fur);
+    ctx.fillStyle = fur; ctx.beginPath(); ctx.ellipse(0, 0.33, 0.36, 0.14, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(0.42, 0.48, 0.12, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = dark; ctx.beginPath(); ctx.ellipse(0.36, 0.57, 0.05, 0.1, 0.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#e8483d'; ctx.beginPath(); ctx.ellipse(0.53, 0.4, 0.04, 0.03, 0, 0, Math.PI * 2); ctx.fill();
+  }, Math.abs(Math.sin(age * 12)) * 0.12);
+}
+function pow(txt, wx, wy, wz, col, size) {
+  const p = P(wx, wy, wz); if (!p) return;
+  S.pow = { txt, x: clamp(p.x, 80, W - 80), y: clamp(p.y, 60, H - 60), col, size, t0: S.clock, rot: rnd(-0.22, 0.22) };
+}
+function drawPow() {
+  const w = S.pow; if (!w) return;
+  const k = S.clock - w.t0; if (k > 0.95) { S.pow = null; return; }
+  const sc = k < 0.1 ? k / 0.1 * 1.3 : 1.3 - Math.min(0.3, (k - 0.1) * 1.2);
+  ctx.save(); ctx.translate(w.x, w.y - k * 28); ctx.rotate(w.rot); ctx.scale(sc, sc);
+  ctx.globalAlpha = clamp((0.95 - k) / 0.3, 0, 1);
+  ctx.font = `400 ${w.size}px "Black Han Sans","Saira Condensed",sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round'; ctx.lineWidth = w.size * 0.18; ctx.strokeStyle = '#0b1220'; ctx.strokeText(w.txt, 0, 0);
+  ctx.fillStyle = w.col; ctx.fillText(w.txt, 0, 0);
+  ctx.restore(); ctx.globalAlpha = 1;
+}
 function drawBatView() {
   drawGround();
   drawAim();
@@ -840,6 +949,8 @@ function drawBatView() {
   items.push({ z: S.phase === 'delivery' && S.pt > 0.3 ? L - 2.5 : L - 0.3, d: drawBowler });
   items.push({ z: 1.25, d: drawBatsman });
   items.push({ z: 0, d: () => drawStumps(0, S.stumpHit) });
+  if (S.batFly) items.push({ z: batFlyZ(), d: drawFlyingBat });
+  if (S.dog && S.clock - S.dog.t0 < 5.5) items.push({ z: S.dog.z, d: drawDog });
   let bp = null;
   if (D && (S.phase === 'delivery' || S.phase === 'dead' && !S.shot)) {
     const t = S.phase === 'delivery' ? S.pt : D.ts + 0.3;
@@ -952,6 +1063,7 @@ function frame() {
   ctx.clearRect(0, 0, W, H);
   const aerial = S.shot && (S.phase === 'shot' && S.pt > 0.45 || S.phase === 'dead' || S.phase === 'end');
   if (aerial) drawFieldView(); else drawBatView();
+  drawPow();
   if (S.shot && S.phase === 'shot' && S.pt > 0.45 && S.pt < 0.6) { ctx.fillStyle = `rgba(255,255,255,${(0.6 - S.pt) / 0.15 * 0.5})`; ctx.fillRect(0, 0, W, H); }
 }
 
