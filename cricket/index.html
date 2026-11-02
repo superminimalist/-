@@ -92,8 +92,6 @@ h2.win{color:var(--turf)}h2.loss{color:var(--out)}h2.tie{color:var(--lamp)}
 #loftBtn[aria-pressed="true"]{background:#3a2f0e;border-color:var(--lamp);color:var(--lamp)}
 #rail #swingBtn{flex:0 0 28%;background:var(--lamp)!important;color:var(--ink);font-family:var(--f-display);font-size:22px;border:0!important}
 #rail #swingBtn:active{transform:translateY(1px);filter:brightness(.92)}
-.hint{display:none}
-@media (min-width:860px) and (hover:hover){.hint{display:flex;align-items:center;color:var(--mute);font-size:12px;padding:0 6px;max-width:300px;line-height:1.4}}
 @media (max-width:520px){.score{font-size:26px}.cell b{font-size:16px}#rail .aim{min-width:52px;padding:6px 8px}#rail #loftBtn{padding:6px 8px}#rail #swingBtn{font-size:19px}.stats dd{font-size:20px}.card{padding:18px}}
 #comm{position:absolute;left:12px;right:12px;bottom:12px;z-index:3;display:flex;justify-content:center;pointer-events:none}
 #comm .bub{max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:8px 13px;font-size:13.5px;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,.45);transition:opacity .25s,transform .25s}
@@ -146,6 +144,27 @@ ul.res{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:12.5px;
 .bars dd span{display:block;height:100%;background:var(--tc)}.bars em{font-style:normal;font-family:var(--f-num);font-weight:700;text-align:end}
 .pcard .btype,.pcard footer{font-size:11px;color:var(--mute);margin:0}
 .pcard .line{margin:0;font-family:var(--f-num);font-size:19px;font-weight:800;color:var(--lamp)}
+#watchBar,#manualBar{display:flex;gap:8px;align-items:stretch;flex:1;min-width:0}
+#watchBar .seg{background:var(--panel);border-radius:12px;align-items:center}
+#watchBar .seg button{border:0!important;background:transparent!important;border-radius:9px!important}
+#watchBar .seg button[aria-pressed="true"]{background:var(--lamp)!important;color:var(--ink)}
+#manualBtn[aria-pressed="true"]{background:#3a2f0e!important;border-color:var(--lamp)!important;color:var(--lamp)}
+#rail button:disabled{opacity:.4;cursor:not-allowed}
+#railHint{flex:1;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:12.5px;border:1px dashed var(--line);border-radius:12px}
+#manualBar #swingBtn{flex:0 0 28%;background:var(--lamp)!important;color:var(--ink);font-family:var(--f-display);font-size:22px;border:0!important}
+.pcard .lv{font-family:var(--f-num);font-weight:800;font-size:13px;background:var(--ti);color:var(--lamp);border-radius:6px;padding:1px 6px}
+.xp{height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden;position:relative}.xp span{display:block;height:100%;background:var(--lamp)}
+.ctl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:8px;position:relative}
+.ctl .ord{font-family:var(--f-num);font-weight:700;font-size:13px;color:var(--mute);min-width:28px}
+.ctl button{border:1px solid var(--line);background:#141f33;border-radius:8px;padding:5px 9px;font-size:12px}
+.ctl .enh small{display:block;font-weight:500;font-size:10.5px;opacity:.85}
+.ctl .enh{flex:1;line-height:1.25;background:#3a2f0e;border-color:rgba(255,207,90,.4);color:var(--lamp);font-weight:700}
+.ctl button:disabled{opacity:.35;cursor:not-allowed}
+.wallet{font-size:12.5px;color:var(--mute);line-height:1.5}.wallet b{font-family:var(--f-num);font-size:22px;color:var(--lamp);margin-inline-end:4px}
+.toast{margin:0;padding:10px 12px;border-radius:10px;font-weight:700;font-size:13.5px;animation:pop2 .4s cubic-bezier(.2,1.5,.4,1)}
+.toast.ok{background:rgba(53,168,96,.18);color:#8ff0b4}.toast.fail{background:rgba(255,255,255,.06);color:var(--chalk)}.toast.drop{background:rgba(255,97,83,.15);color:#ffb0a8}
+@keyframes pop2{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+.reward{margin:0;padding:10px 12px;border-radius:10px;background:rgba(255,207,90,.08);font-size:13px;line-height:1.6}.reward b{color:var(--lamp);margin-inline-end:6px}
 @media (max-width:640px){.split{grid-template-columns:minmax(0,1fr)}.potm{max-width:260px}}
 @media (prefers-reduced-motion:reduce){#banner.show{animation:none}#comm .bub{transition:none}}
 </style>
@@ -173,9 +192,9 @@ ul.res{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:12.5px;
 
     <section class="sheet" id="menu">
       <div class="card">
-        <p class="eyebrow">MCC 경기 규칙 · T20 운영 규정 · 해설진 대기 중</p>
+        <p class="eyebrow">감독 모드 · MCC 경기 규칙 · T20 운영 규정</p>
         <h1>나이트 크리즈</h1>
-        <p class="lede">여섯 지역, 지역마다 선수 11명. 토스로 시작해 두 이닝, 동점이면 슈퍼 오버. 타석에선 직접 치고, 수비 이닝은 주장이 돌립니다.</p>
+        <p class="lede">지역 구단의 감독이 되세요. 타순과 전술을 정하면 경기는 선수들이 알아서 뜁니다. 이기면 코인, 뛰면 경험치. 코인으로 선수를 강화하고 대항전 우승을 노리세요.</p>
         <div class="modes" id="modes"></div>
         <div class="row"><span class="lbl">우리 지역</span><div class="teams" id="teamPick"></div></div>
         <p class="note" id="teamName"></p>
@@ -183,7 +202,10 @@ ul.res{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:12.5px;
         <div class="row" id="fmtRow"><span class="lbl">경기 방식</span><div class="seg" id="fmtSeg" role="group" aria-label="경기 방식"></div></div>
         <p class="note" id="fmtNote"></p>
         <div class="row"><span class="lbl">난이도</span><div class="seg" id="diffSeg" role="group" aria-label="난이도"></div></div>
-        <div class="btns"><button class="primary" id="startBtn">경기 시작</button><button class="ghost" id="squadBtn">선수 카드 보기</button></div>
+        <div class="row" id="tacRow"><span class="lbl">타격 전술</span><div class="seg" id="tacSeg" role="group" aria-label="타격 전술"></div></div>
+        <div class="row" id="watchRow"><span class="lbl">경기 진행</span><div class="seg" id="watchSeg" role="group" aria-label="경기 진행"></div></div>
+        <p class="note" id="clubLine"></p>
+        <div class="btns"><button class="primary" id="startBtn">경기 시작</button><button class="ghost" id="squadBtn">선수단 · 강화</button></div>
         <details class="rules"><summary>적용 규칙</summary><ul>
           <li>팀당 11명. 10위켓을 잃으면 올아웃으로 이닝 종료.</li>
           <li>와이드·노볼은 1점을 더하고 다시 던진다. 노볼은 타자 상대 볼로 세고 와이드는 세지 않는다.</li>
@@ -216,12 +238,19 @@ ul.res{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:12.5px;
   </main>
 
   <nav id="rail">
-    <button class="aim" id="aimL" aria-label="레그 사이드로 조준">◀ 레그</button>
-    <div id="aimRead"><small>조준</small><b id="aimName">스트레이트 드라이브</b></div>
-    <button class="aim" id="aimR" aria-label="오프 사이드로 조준">오프 ▶</button>
-    <button id="loftBtn" aria-pressed="false">로프트</button>
-    <span class="hint">마우스로 방향을 잡고 공이 배트에 오기 직전에 클릭</span>
-    <button id="swingBtn">스윙</button>
+    <div id="watchBar" hidden>
+      <div class="seg" id="spdSeg" role="group" aria-label="진행 속도"><button data-spd="1">1배</button><button data-spd="2">2배</button><button data-spd="4">4배</button></div>
+      <button id="skipBtn">이닝 끝까지</button>
+      <button id="manualBtn" aria-pressed="false">직접 치기</button>
+    </div>
+    <span id="railHint">시범 경기 · 경기를 고르면 감독석으로</span>
+    <div id="manualBar" hidden>
+      <button class="aim" id="aimL" aria-label="레그 사이드로 조준">◀ 레그</button>
+      <div id="aimRead"><small>조준</small><b id="aimName">스트레이트 드라이브</b></div>
+      <button class="aim" id="aimR" aria-label="오프 사이드로 조준">오프 ▶</button>
+      <button id="loftBtn" aria-pressed="false">로프트</button>
+      <button id="swingBtn">스윙</button>
+    </div>
   </nav>
 </div>
 
@@ -261,7 +290,7 @@ const FORMATS = {
 const MODES = {
   friendly: { name: '친선 경기', desc: '토스부터 두 이닝, 동점이면 슈퍼 오버' },
   cup:      { name: '지역 대항전', desc: '6개 지역 리그전 → 준결승 → 결승' },
-  nets:     { name: '네트 연습', desc: '규칙 없이 10위켓까지 타격 연습' }
+  nets:     { name: '네트 연습', desc: '감독 대신 직접 배트를 잡는 연습' }
 };
 const REGIONS = [
   { id: 'SEL', city: '서울', name: '서울 한강 나이츠',      color: '#3b7be6', ink: '#0b1d44' },
@@ -303,6 +332,142 @@ function bowlerProfile(p) {
   return { name: p.name, label: BTYPE[t], kit: team(p.team).color, kmh: p.bowl.kmh, spin: t === 'spin',
     swing: t === 'swing' ? 0.18 + 0.2 * k : 0.07, seam: t === 'pace' ? 0.13 : 0.05, turn: 0.28 + 0.2 * k,
     short: t === 'pace' ? 0.3 : t === 'swing' ? 0.12 : 0.05, wideP: 0.055 - 0.04 * k, nbP: 0.03 - 0.024 * k, card: p };
+}
+/* ---------- 감독 모드: 구단, 강화, 성장, 전술 ---------- */
+const TACTICS = { def: { name: '수비적', ag: -0.2, note: '위켓을 아끼며 단타 위주' }, bal: { name: '균형', ag: 0, note: '상황 따라 공격과 수비' }, att: { name: '공격적', ag: 0.25, note: '초반부터 띄워서 큰 거 노림' } };
+const ATTR = { tim: '타이밍', pow: '파워', run: '주루', skl: '투구' };
+const ENH_RATE = [1, 0.95, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2];
+const enhCost = L => 60 + L * 45;
+const ENH_LINES = {
+  ok: ['강화 성공! 배트에서 빛이 납니다.', '성공! 선수가 거울 앞에서 포즈를 잡습니다.', '강화 성공. 해설 둥치가 박수를 칩니다.'],
+  fail: ['강화 실패… 배트가 삐졌습니다.', '실패! 코치가 조용히 눈을 피합니다.', '실패. 코인은 바람과 함께 사라졌습니다.'],
+  drop: ['강화 실패, 레벨 하락! 선수가 슬럼프 노래를 부릅니다.', '하락! 선수가 장갑을 거꾸로 꼈다고 합니다.']
+};
+function calcOvr(p) {
+  const batO = p.bat.tim * 0.45 + p.bat.pow * 0.4 + p.bat.run * 0.15;
+  return Math.min(99, Math.round(p.role === 'BOWL' ? p.bowl.skl * 0.92 + 4 : p.role === 'AR' ? (batO + p.bowl.skl) / 2 + 6 : batO));
+}
+Object.values(PLAYERS).forEach(p => { p.base = { bat: { ...p.bat }, bowl: { ...p.bowl } }; p.baseOrder = SQUADS[p.team].indexOf(p); p.lvl = 0; });
+const clubKey = id => `nc.club.${id}`;
+function loadClub(id) {
+  const c = store.get(clubKey(id), null) || {};
+  return { team: id, coins: 300, lvl: {}, add: {}, xp: {}, order: SQUADS[id].map(p => p.id), tactic: 'bal', ...c };
+}
+const saveClub = () => store.set(clubKey(S.club.team), S.club);
+function applyAll() {
+  const cap = v => Math.min(99, v);
+  for (const [tid, sq] of Object.entries(SQUADS)) {
+    const c = S.club && S.club.team === tid ? S.club : null;
+    for (const p of sq) {
+      const L = c ? c.lvl[p.id] || 0 : 0, a = c ? c.add[p.id] || {} : {};
+      p.bat = { tim: cap(p.base.bat.tim + 2 * L + (a.tim || 0)), pow: cap(p.base.bat.pow + 2 * L + (a.pow || 0)), run: cap(p.base.bat.run + 2 * L + (a.run || 0)) };
+      p.bowl = { ...p.base.bowl, skl: cap(p.base.bowl.skl + 2 * L + (a.skl || 0)), kmh: p.base.bowl.kmh + L };
+      p.lvl = L; p.xp = c ? c.xp[p.id] || 0 : 0; p.ovr = calcOvr(p);
+    }
+    const ord = c ? c.order : null;
+    sq.sort((x, y) => ord && ord.length === sq.length ? ord.indexOf(x.id) - ord.indexOf(y.id) : x.baseOrder - y.baseOrder);
+  }
+}
+function setClub(id) { S.club = loadClub(id); applyAll(); }
+function enhance(pid) {
+  const c = S.club, L = c.lvl[pid] || 0;
+  if (L >= 10) return { msg: '이미 최고 강화(+10)입니다.', kind: 'fail' };
+  const cost = enhCost(L);
+  if (c.coins < cost) return { msg: `코인이 모자랍니다. ${cost} 필요, 보유 ${c.coins}.`, kind: 'fail' };
+  c.coins -= cost;
+  const ok = Math.random() < ENH_RATE[L];
+  if (ok) c.lvl[pid] = L + 1; else if (L >= 5) c.lvl[pid] = L - 1;
+  saveClub(); applyAll();
+  const kind = ok ? 'ok' : L >= 5 ? 'drop' : 'fail', name = PLAYERS[pid].name;
+  return { kind, msg: `${name} +${L} → +${c.lvl[pid] || 0} · ${pick(ENH_LINES[kind])}` };
+}
+function moveOrder(pid, d) {
+  const o = S.club.order, i = o.indexOf(pid), j = i + d;
+  if (i < 0 || j < 0 || j >= o.length) return;
+  [o[i], o[j]] = [o[j], o[i]]; saveClub(); applyAll();
+}
+function growthAttr(p) {
+  const r = Math.random();
+  if (p.role === 'BOWL') return r < 0.7 ? 'skl' : r < 0.85 ? 'tim' : 'pow';
+  if (p.role === 'AR') return r < 0.4 ? 'skl' : r < 0.65 ? 'tim' : r < 0.85 ? 'pow' : 'run';
+  return r < 0.4 ? 'tim' : r < 0.75 ? 'pow' : 'run';
+}
+function grantRewards(won, potm) {
+  const c = S.club; if (!c || c.team !== M.me) return null;
+  let coins = won ? 120 : 60; if (potm.p.team === c.team) coins += 30;
+  const st = {};
+  for (const inn of [...M.inns, ...M.so]) {
+    inn.card.forEach(x => { if (x.batted) (st[x.pid] = st[x.pid] || { r: 0, w: 0, bb: 0 }).r += x.r; });
+    for (const [id, b] of Object.entries(inn.bowl)) { const s = st[id] = st[id] || { r: 0, w: 0, bb: 0 }; s.w += b.w; s.bb += b.balls; }
+  }
+  const growth = [];
+  for (const p of SQUADS[c.team]) {
+    const s = st[p.id] || { r: 0, w: 0, bb: 0 };
+    c.xp[p.id] = (c.xp[p.id] || 0) + 12 + s.r + 20 * s.w + Math.floor(s.bb / 6) * 3 + (won ? 5 : 0);
+    while (c.xp[p.id] >= 100) {
+      c.xp[p.id] -= 100; const a = growthAttr(p);
+      (c.add[p.id] = c.add[p.id] || {})[a] = (c.add[p.id][a] || 0) + 1;
+      growth.push(`${p.name} ${ATTR[a]} +1`);
+    }
+  }
+  c.coins += coins; saveClub(); applyAll();
+  return { coins, growth };
+}
+function cupBonus(c, before) {
+  let coins = 0, notes = [];
+  if (before === 'league' && c.stage !== 'league' && c.ko.some(m => m.a === c.me || m.b === c.me)) { coins += 150; notes.push('준결승 진출 +150'); }
+  if (c.stage === 'done' && c.champion === c.me) { coins += 500; notes.push('우승 상금 +500'); }
+  if (coins && S.club && S.club.team === c.me) { S.club.coins += coins; saveClub(); }
+  return notes;
+}
+/* ---------- 자동 진행: AI 타자의 선택과 타이밍 ---------- */
+function aggression() {
+  const inn = S.inn; if (!inn) return 0.4;
+  const left = inn.maxBalls - inn.balls;
+  let ag = 0.3 + (inn.balls < inn.pp ? 0.15 : 0) + (isFinite(left) && left <= Math.max(6, inn.maxBalls * 0.2) ? 0.35 : 0);
+  if (inn.target != null) ag = clamp(0.1 + ((inn.target - inn.runs) / Math.max(1, left) * 6 - 6.5) * 0.09, 0, 1);
+  if (left > 6 && inn.maxW - inn.wkts <= 3) ag *= 0.6;
+  if (M && S.club && inn.batId === M.me) ag += TACTICS[S.club.tactic].ag;
+  if (inn.freeHit) ag = 1;
+  return clamp(ag, 0, 1);
+}
+function aiPlan() {
+  const ag = aggression();
+  const ring = FIELD.filter(f => !f.keeper && f.id !== 'bowler' && f.id !== 'slip').map(f => Math.atan2(f.hx, f.hy - 1));
+  let best = 0, bestV = -1;
+  for (let a = -1.4; a <= 1.41; a += 0.1) {
+    const v = Math.min(...ring.map(r => Math.abs(r - a))) + Math.random() * 0.3;
+    if (v > bestV) { bestV = v; best = a; }
+  }
+  S.aim = clamp(best + (Math.random() * 2 - 1) * AI.aimN, -1.45, 1.45); S.loft = Math.random() < AI.loft0 + AI.loftAg * ag;
+}
+// 자동 타격 보정값: T20 기준 자동 이닝 평균 ~140점·7위켓으로 통계 시뮬레이션(~146점)과 맞춤
+const AI = { sig0: 0.024, sigK: 0.05, loft0: 0.03, loftAg: 0.28, spd: 0.82, aimN: 0.35 };
+function aiTiming(D) {
+  const p = striker(), tim = p ? p.bat.tim : 75, sig = AI.sig0 + (100 - tim) / 100 * AI.sigK;
+  const g = (Math.random() + Math.random() + Math.random() - 1.5) * 2 * sig;
+  D.autoT = D.tc - LEAD + g;
+  const wideish = D.pc.x > 0.9 || D.pc.x < -0.75 || D.pc.y > 1.6;
+  D.leave = wideish && Math.random() < 0.75 || (!D.hitsStumps && D.pc.x > 0.45 && aggression() < 0.3 && Math.random() < 0.4);
+  if (D.zb < 2.1) S.loft = false;
+}
+function autoBat() { return S.demo || !M || (M.kind !== 'nets' && !(S.manual && S.inn && S.inn.batId === M.me)); }
+function updateRail() {
+  const live = !S.demo && !!M && M.kind !== 'nets' && S.phase !== 'end';
+  $('watchBar').hidden = !live;
+  const ours = live && S.inn && S.inn.batId === M.me;
+  $('manualBtn').disabled = !ours; $('manualBtn').setAttribute('aria-pressed', String(!!S.manual));
+  $('manualBar').hidden = S.autoBat;
+  $('railHint').hidden = !(S.autoBat && !live);
+  $('spdSeg').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.spd === S.speed)));
+}
+function skipInnings() {
+  if (S.demo || !S.inn || S.inn.done || S.phase === 'end') return;
+  S.shot = null; S.D = null; timers.length = 0;
+  simInnings(S.inn, S.inn.batId === M.me ? 1 : DIFF[S.diff].sim);
+  const b = $('banner'); b.className = ''; void b.offsetWidth; b.className = 'show kD';
+  b.querySelector('.big').textContent = '이닝 끝까지'; b.querySelector('.sub').textContent = `${team(S.inn.batId).city} ${S.inn.runs}/${S.inn.wkts} (${oversStr(S.inn.balls)})`;
+  hud(); endUserInnings(); updateRail();
 }
 // field placings: a = angle from straight (rad, + = off side), d = metres from striker
 const FIELD = [
@@ -403,6 +568,7 @@ const S = {
   mode: store.get('nc.mode2', 'friendly'), diff: store.get('nc.diff', 'normal'),
   me: store.get('nc.me', 'SEL'), opp: store.get('nc.opp', 'BSN'), fmt: store.get('nc.fmt', 5),
   aim: 0, aimVel: 0, loft: false, loftHold: false, inn: null, bowler: null, acts: {},
+  club: null, speed: 1, manual: false, autoBat: true, watch: store.get('nc.watch', true),
   batKit: '#3b7be6', batInk: '#0b1d44', fieldKit: '#1fb3ae', fieldInk: '#062e2c', batNo: 7,
   D: null, swing: null, shot: null, outcome: null, applied: false, stumpHit: null, feedback: null, flashes: []
 };
@@ -469,7 +635,7 @@ function computeHit(D, err, aim, loft) {
   q -= Math.max(0, across - 1.1) * 0.12;
   q = clamp(q, 0.3, 1);
   const ang = clamp(aim + err * 7 + rnd(-0.07, 0.07) * (1.3 - q), -2.2, 2.2);
-  const speed = 13 + 16.5 * q + D.kmh / 50 + (loft ? 2 : 4) + rnd(-1, 1) + powBonus();
+  const speed = (S.autoBat && !loft ? AI.spd : 1) * (13 + 16.5 * q) + D.kmh / 50 + (loft ? 2 : 4) + rnd(-1, 1) + powBonus();
   return { q, ang, speed, elev, edge: false };
 }
 
@@ -618,6 +784,7 @@ function simBall(inn, batMul) {
   let ag = 0.22 + (inn.balls < inn.pp ? 0.18 : 0) + (left <= Math.max(6, inn.maxBalls * 0.2) ? 0.45 : 0);
   if (need !== null) ag = clamp(0.05 + (need / Math.max(1, left) * 6 - 6.5) * 0.1, 0, 1.1);
   if (left > 6 && inn.maxW - inn.wkts <= 3) ag *= 0.6;
+  if (M && S.club && inn.batId === M.me) ag = clamp(ag + TACTICS[S.club.tactic].ag, 0, 1.1);
   if (prot) ag = 1.1;
   const bq = (bat.bat.tim * 0.55 + bat.bat.pow * 0.45) / 75 * batMul, wq = bwr.bowl.skl / 75;
   const wW = prot ? 0 : 0.043 * wq / bq * (1 + 0.8 * ag);
@@ -684,8 +851,8 @@ function startDemo() {
 function startBall(wait) {
   Object.assign(S, { phase: 'ready', pt: 0, wait, D: null, swing: null, shot: null, outcome: null, applied: false, stumpHit: null, contact: false, whiff: false, batFly: null, lbwVoid: null });
   prepBall();
+  S.autoBat = autoBat(); if (S.autoBat) aiPlan(); updateRail();
   if (!(S.dog && S.clock - S.dog.t0 < 5.5) && Math.random() < 0.1) { S.dog = { t0: S.clock, dir: Math.random() < 0.5 ? -1 : 1, z: rnd(24, 36) }; later(0.6, () => say('dog', true)); }
-  if (S.demo) { S.aim = rnd(-1.2, 1.2); S.loft = Math.random() < 0.4; }
   hud();
 }
 function doSwing() {
@@ -718,10 +885,10 @@ function update(dt) {
       if (S.pt >= S.wait) { S.phase = 'runup'; S.pt = 0; S.D = makeDelivery(); }
       break;
     case 'runup':
-      if (S.pt >= RUNUP) { S.phase = 'delivery'; S.pt = 0; if (D && D.noBall && !S.demo) sfx('ooh'); }
+      if (S.pt >= RUNUP) { S.phase = 'delivery'; S.pt = 0; if (S.autoBat) aiTiming(D); if (D && D.noBall && !S.demo) sfx('ooh'); }
       break;
     case 'delivery': {
-      if (S.demo && !S.swing && S.pt >= D.autoT) doSwing();
+      if (S.autoBat && !S.swing && !D.leave && S.pt >= D.autoT) doSwing();
       const res = S.swing && S.swing.res;
       if (!S.contact && S.pt >= D.tc && res && !res.miss) {
         S.contact = true;
@@ -841,22 +1008,22 @@ function matchLabel() {
 }
 function playInnings(inn) {
   hidePanel(); $('menu').hidden = true;
-  S.demo = false; S.inn = inn; S.overEnd = false; S.lastPP = inn.pp > 0;
+  S.demo = false; S.inn = inn; S.overEnd = false; S.lastPP = inn.pp > 0; S.speed = S.speed || 1;
   timers.length = 0; S.commHide = 0; $('comm').classList.add('off');
   setAim(0); setLoft(false);
   startBall(1.2);
 }
 function endUserInnings() {
-  S.phase = 'end';
+  S.phase = 'end'; updateRail();
   later(1.5, () => { $('banner').className = ''; const f = S.onDone; S.onDone = null; f && f(); });
 }
 function runInnings(inn, then) {
-  if (inn.batId === M.me) { S.onDone = then; playInnings(inn); }
-  else { simInnings(inn, DIFF[S.diff].sim); then(); }
+  if (M.watch || M.kind === 'nets') { S.onDone = then; playInnings(inn); }
+  else { simInnings(inn, inn.batId === M.me ? 1 : DIFF[S.diff].sim); then(); }
 }
 function startMatch(kind, me, opp, fmtKey, fixture = null, label = '') {
   audioInit();
-  M = { kind, me, opp, fmtKey, fmt: FORMATS[fmtKey], balls: FORMATS[fmtKey].overs * 6, inns: [], so: [], fixture, label };
+  M = { kind, me, opp, fmtKey, fmt: FORMATS[fmtKey], balls: FORMATS[fmtKey].overs * 6, inns: [], so: [], fixture, label, watch: S.watch };
   $('menu').hidden = true;
   const meWins = Math.random() < 0.5, A = team(me), B = team(opp);
   const head = `<p class="eyebrow">${matchLabel()}</p><p class="vs"><span style="--tc:${A.color}">${A.name}</span><em>vs</em><span style="--tc:${B.color}">${B.name}</span></p>`;
@@ -946,13 +1113,15 @@ function showResult() {
   }
   const w = matchWinner(), won = w === M.me;
   updateCareer();
-  if (M.kind === 'cup') cupRecordUser(w);
   const potm = playerOfMatch(w);
-  const acts = M.kind === 'cup' ? { hub: cupHub, menu: toMenu } : { again: () => startMatch('friendly', M.me, M.opp, M.fmtKey), menu: toMenu };
-  const btns = M.kind === 'cup' ? '<button class="primary" data-act="hub">대항전 순위표</button><button class="ghost" data-act="menu">메뉴</button>'
-    : '<button class="primary" data-act="again">재경기</button><button class="ghost" data-act="menu">경기 선택</button>';
+  const rw = grantRewards(won, potm);
+  const cupNotes = M.kind === 'cup' ? cupRecordUser(w) || [] : [];
+  const acts = M.kind === 'cup' ? { hub: cupHub, menu: toMenu, squad: () => openSquad(M.me, cupHub) } : { again: () => startMatch('friendly', M.me, M.opp, M.fmtKey), menu: toMenu, squad: () => openSquad(M.me, toMenu) };
+  const btns = (M.kind === 'cup' ? '<button class="primary" data-act="hub">대항전 순위표</button>' : '<button class="primary" data-act="again">재경기</button>')
+    + '<button class="ghost" data-act="squad">선수단 · 강화</button><button class="ghost" data-act="menu">메뉴</button>';
   showPanel(`<p class="eyebrow">${matchLabel()} · ${DIFF[S.diff].name}</p><h2 class="${won ? 'win' : 'loss'}">${won ? '승리!' : '패배'}</h2>
     <p class="lede">${marginText()}. ${pick(ROAST[won ? 'win' : 'loss'])}</p>
+    ${rw ? `<p class="reward"><b>보상</b> 코인 +${rw.coins}${cupNotes.length ? ' · ' + cupNotes.join(' · ') : ''} · 보유 ${S.club.coins}${rw.growth.length ? `<br><b>성장</b> ${rw.growth.join(', ')}` : ''}</p>` : ''}
     <div class="split"><div class="potm"><p class="eyebrow">플레이어 오브 더 매치</p>${cardHTML(potm.p, potm.line)}</div><div class="scs">${allScorecards()}</div></div>
     <div class="btns">${btns}</div>`, acts, true);
 }
@@ -985,23 +1154,38 @@ function scorecardHTML(inn) {
   ${dnb.length ? `<p class="small">출전 안 함: ${dnb.join(', ')}</p>` : ''}${fow ? `<p class="small">위켓 순서: ${fow}</p>` : ''}
   <div class="tw"><table><thead><tr><th>볼러</th><th>O</th><th>M</th><th>R</th><th>W</th><th>Econ</th><th>WD</th><th>NB</th></tr></thead><tbody>${bowl}</tbody></table></div></section>`;
 }
-function cardHTML(p, line = '') {
+function cardHTML(p, line = '', ctl = '') {
   const t = team(p.team), c = careerOf(p.id);
   const bars = [['타이밍', p.bat.tim], ['파워', p.bat.pow], ['주루', p.bat.run], ['투구', p.bowl.skl]];
   return `<article class="pcard" style="--tc:${t.color};--ti:${t.ink}"><span class="wm">${p.no}</span>
-    <header><b class="ovr">${p.ovr}</b><span class="role">${ROLE_NAME[p.role]}</span><span class="no">#${p.no}</span></header>
+    <header><b class="ovr">${p.ovr}</b><span class="role">${ROLE_NAME[p.role]}</span>${p.lvl ? `<span class="lv">+${p.lvl}</span>` : ''}<span class="no">#${p.no}</span></header>
     <div class="pn"><small>'${p.nick}'</small><b>${p.name}</b><i>${t.name}</i></div>
     <dl class="bars">${bars.map(([k, v]) => `<div><dt>${k}</dt><dd><span style="width:${v}%"></span></dd><em>${v}</em></div>`).join('')}</dl>
     <p class="btype">${BTYPE[p.bowl.type]} · ${p.bowl.kmh}km/h</p>${line ? `<p class="line">${line}</p>` : ''}
-    <footer>${c.m ? `통산 ${c.m}경기 · ${c.r}런 · 최고 ${c.hs} · ${c.wk}위켓` : '통산 기록 없음'}</footer></article>`;
+    ${S.club && S.club.team === p.team ? `<div class="xp" title="경험치"><span style="width:${p.xp}%"></span></div>` : ''}
+    <footer>${c.m ? `통산 ${c.m}경기 · ${c.r}런 · 최고 ${c.hs} · ${c.wk}위켓` : '통산 기록 없음'}</footer>${ctl}</article>`;
 }
-function openSquad(id, back) {
-  const t = team(id);
-  showPanel(`<p class="eyebrow">선수 카드 · 타순</p><h2 style="color:${t.color}">${t.name}</h2>
+function openSquad(id, back, msg) {
+  const t = team(id), mine = S.club && S.club.team === id && !(M && S.phase !== 'end' && !S.demo);
+  const sq = SQUADS[id];
+  const ctl = (p, i) => {
+    if (!mine) return '';
+    const L = p.lvl, can = L < 10;
+    return `<div class="ctl"><span class="ord">${i + 1}번</span><button data-act="up" data-id="${p.id}" ${i === 0 ? 'disabled' : ''} aria-label="타순 올리기">▲</button><button data-act="down" data-id="${p.id}" ${i === sq.length - 1 ? 'disabled' : ''} aria-label="타순 내리기">▼</button>
+      <button class="enh" data-act="enh" data-id="${p.id}" ${can ? '' : 'disabled'}>${can ? `강화 +${L + 1}<small>${enhCost(L)}코인 · 성공 ${Math.round(ENH_RATE[L] * 100)}%</small>` : '최고 강화'}</button></div>`;
+  };
+  const head = mine ? `<div class="wallet"><b>${S.club.coins}</b> 코인 · 강화는 +1마다 모든 능력치 +2 · +5부터 실패하면 한 단계 떨어짐 · 경기 경험치 100마다 능력치 1 성장</div>` : '';
+  showPanel(`<p class="eyebrow">${mine ? '감독실 · 선수단 관리' : '선수 카드'} · 타순</p><h2 style="color:${t.color}">${t.name}</h2>
     <div class="teams">${REGIONS.map(r => `<button class="tchip" data-act="sq" data-id="${r.id}" aria-pressed="${r.id === id}"><i style="background:${r.color}"></i>${r.city}</button>`).join('')}</div>
-    <p class="lede">능력치는 플레이에 그대로 들어갑니다. 타이밍은 판정 폭, 파워는 타구 속도, 주루는 달리기, 투구는 볼러일 때 제구·변화·노볼 확률. 큰 숫자는 종합 능력치.</p>
-    <div class="cards">${SQUADS[id].map(p => cardHTML(p)).join('')}</div>
-    <div class="btns"><button class="primary" data-act="back">돌아가기</button></div>`, { sq: d => openSquad(d.id, back), back }, true);
+    ${head}${msg ? `<p class="toast ${msg.kind}">${msg.msg}</p>` : ''}
+    <div class="cards">${sq.map((p, i) => cardHTML(p, '', ctl(p, i))).join('')}</div>
+    <div class="btns"><button class="primary" data-act="back">돌아가기</button></div>`, {
+    sq: d => openSquad(d.id, back), back,
+    up: d => { moveOrder(d.id, -1); openSquad(id, back); },
+    down: d => { moveOrder(d.id, 1); openSquad(id, back); },
+    enh: d => { const r = enhance(d.id); if (r.kind === 'ok') sfx('roar', 0.5); openSquad(id, back, r); }
+  }, true);
+  if (msg) { const p = $('panel'); p.scrollTop = 0; }
 }
 
 /* ---------- 지역 대항전: 리그(승점·NRR) → 준결승 → 결승 ---------- */
@@ -1071,11 +1255,15 @@ function cupRecordUser(w) {
   const c = S.cup, fx = M.fixture; if (!c || !fx || fx.res) return;
   fx.res = { winner: w, line: resultLine(M.inns[0], M.inns[1], M.so, w) };
   if (c.stage === 'league') recordLeague(c, M.inns[0], M.inns[1], w);
+  const before = c.stage;
   cupAdvance(c); saveCup();
+  return cupBonus(c, before);
 }
 function openCup() {
   S.cup = store.get('nc.cup', null);
   if (!S.cup || S.cup.stage === 'done') { S.cup = newCup(S.me, S.fmt); saveCup(); }
+  if (S.me !== S.cup.me) { S.me = S.cup.me; store.set('nc.me', S.me); }
+  setClub(S.me);
   cupHub();
 }
 function cupHub() {
@@ -1116,7 +1304,7 @@ function hud() {
   const inn = S.inn;
   if (S.demo || !inn) {
     $('sScore').textContent = '—'; $('sOvers').textContent = '—'; $('sOversOf').textContent = ''; $('sTarget').textContent = '—';
-    $('sNeed').textContent = '시범 경기 중 · 경기를 골라 타석에 서세요'; $('sNeed').classList.remove('hot');
+    $('sNeed').textContent = '시범 경기 중 · 경기를 고르면 감독석으로'; $('sNeed').classList.remove('hot');
     $('sBat').textContent = '—'; $('sBat2').textContent = '';
     $('sBowler').textContent = S.bowler ? S.bowler.name : '—'; $('sType').textContent = S.bowler ? S.bowler.label : ''; $('sChips').innerHTML = '';
     return;
@@ -1640,9 +1828,9 @@ function setMuted(m) {
 
 /* ---------- input ---------- */
 function aimFromX(clientX) { const r = cv.getBoundingClientRect(); setAim(((clientX - r.left) - r.width / 2) / (r.width * 0.38) * 1.45); }
-cv.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' && !S.demo) aimFromX(e.clientX); });
+cv.addEventListener('pointermove', e => { if (e.pointerType === 'mouse' && !S.autoBat) aimFromX(e.clientX); });
 cv.addEventListener('pointerdown', e => {
-  if (S.demo) return;
+  if (S.autoBat) return;
   if (AC && AC.state === 'suspended') AC.resume();
   if (S.phase === 'delivery' && !S.swing) { aimFromX(e.clientX); doSwing(); }
   else if (e.pointerType !== 'mouse') aimFromX(e.clientX);
@@ -1654,13 +1842,16 @@ function hold(btn, v) {
 }
 hold($('aimL'), -2.2); hold($('aimR'), 2.2);
 $('loftBtn').addEventListener('click', () => setLoft(!S.loft));
-$('swingBtn').addEventListener('pointerdown', e => { e.preventDefault(); doSwing(); });
+$('swingBtn').addEventListener('pointerdown', e => { e.preventDefault(); if (!S.autoBat) doSwing(); });
+$('spdSeg').addEventListener('click', e => { const b = e.target.closest('[data-spd]'); if (!b) return; S.speed = +b.dataset.spd; updateRail(); });
+$('skipBtn').addEventListener('click', skipInnings);
+$('manualBtn').addEventListener('click', () => { S.manual = !S.manual; if (S.phase === 'ready' || S.phase === 'runup') { S.autoBat = autoBat(); if (S.autoBat) aiPlan(); } updateRail(); });
 $('swingBtn').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doSwing(); } });
 const keys = new Set();
 addEventListener('keydown', e => {
   if (e.repeat && !['ArrowLeft', 'ArrowRight', 'a', 'd'].includes(e.key)) return;
   const k = e.key;
-  if (k === ' ' || k === 'Enter') { if (!S.demo && !S.paused && S.phase !== 'end') { e.preventDefault(); doSwing(); } return; }
+  if (k === ' ' || k === 'Enter') { if (!S.autoBat && !S.paused && S.phase !== 'end') { e.preventDefault(); doSwing(); } return; }
   if (k === 'ArrowLeft' || k === 'a' || k === 'A') { keys.add('L'); S.aimVel = -2.2; e.preventDefault(); }
   if (k === 'ArrowRight' || k === 'd' || k === 'D') { keys.add('R'); S.aimVel = 2.2; e.preventDefault(); }
   if (k === 'ArrowUp' || k === 'w' || k === 'W') { setLoft(!S.loft); e.preventDefault(); }
@@ -1703,11 +1894,18 @@ function renderMenu() {
   $('fmtSeg').innerHTML = Object.entries(FORMATS).map(([k, f]) => `<button data-fmt="${k}" aria-pressed="${+k === +fmt}" ${lock ? 'disabled' : ''}>${f.overs}오버</button>`).join('');
   $('fmtNote').textContent = S.mode === 'nets' ? '오버 제한 없음 · 10위켓 아웃이면 끝' : `${FORMATS[fmt].label} — ${FORMATS[fmt].note}`;
   $('diffSeg').innerHTML = Object.entries(DIFF).map(([k, d]) => `<button data-diff="${k}" aria-pressed="${k === S.diff}">${d.name}</button>`).join('');
+  $('tacSeg').innerHTML = Object.entries(TACTICS).map(([k, t]) => `<button data-tac="${k}" aria-pressed="${k === S.club.tactic}">${t.name}</button>`).join('');
+  $('watchSeg').innerHTML = `<button data-watch="1" aria-pressed="${S.watch}">3D 관전</button><button data-watch="0" aria-pressed="${!S.watch}">결과만</button>`;
+  $('tacRow').hidden = $('watchRow').hidden = S.mode === 'nets';
+  const sq = SQUADS[S.club.team], avg = Math.round(sq.reduce((a, p) => a + p.ovr, 0) / sq.length), enh = sq.reduce((a, p) => a + p.lvl, 0);
+  $('clubLine').textContent = S.mode === 'nets' ? '직접 배트를 잡습니다. 감독은 잠시 휴식.' : `${team(S.club.team).city} 구단 · 코인 ${S.club.coins} · 평균 종합 ${avg} · 강화 합계 +${enh} · ${TACTICS[S.club.tactic].note}`;
   $('startBtn').textContent = S.mode === 'cup' ? (cupLive ? '대항전 이어하기' : '대항전 시작') : S.mode === 'nets' ? '네트로 가기' : '경기 시작';
 }
 const pickIn = (id, attr, fn) => $(id).addEventListener('click', e => { const b = e.target.closest(`[data-${attr}]`); if (!b || b.disabled) return; fn(b.dataset[attr]); renderMenu(); });
 pickIn('modes', 'mode', v => { S.mode = v; store.set('nc.mode2', v); });
-pickIn('teamPick', 'me', v => { S.me = v; store.set('nc.me', v); });
+pickIn('teamPick', 'me', v => { S.me = v; store.set('nc.me', v); setClub(v); });
+pickIn('tacSeg', 'tac', v => { S.club.tactic = v; saveClub(); });
+pickIn('watchSeg', 'watch', v => { S.watch = v === '1'; store.set('nc.watch', S.watch); });
 pickIn('oppPick', 'opp', v => { S.opp = v; store.set('nc.opp', v); });
 pickIn('fmtSeg', 'fmt', v => { S.fmt = +v; store.set('nc.fmt', +v); });
 pickIn('diffSeg', 'diff', v => { S.diff = v; store.set('nc.diff', v); });
@@ -1724,14 +1922,14 @@ $('squadBtn').addEventListener('click', () => { $('menu').hidden = true; openSqu
 
 /* ---------- boot ---------- */
 new ResizeObserver(resize).observe(cv.parentElement);
-init3D(); resize(); renderMenu(); startDemo(); setAim(0);
+setClub(S.me); init3D(); resize(); renderMenu(); startDemo(); setAim(0);
 let last = performance.now();
 function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  update(dt); frame(dt);
+  update(dt * S.speed); frame(dt * S.speed);
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
-window.__nc = { S, SQUADS, PLAYERS, newInnings, simInnings, simMatch, recordBall, doSwing, newCup, cupAdvance, cupUserFixture, recordLeague, standings, get M() { return M; } };
+window.__nc = { AI, makeDelivery, computeHit, simulateShot, resolveShot, aiPlan, aiTiming, prepBall, mkWicket, S, SQUADS, PLAYERS, newInnings, simInnings, simMatch, recordBall, doSwing, newCup, cupAdvance, cupUserFixture, recordLeague, standings, get M() { return M; } };
 })();
 </script>
