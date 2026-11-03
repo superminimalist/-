@@ -18,7 +18,7 @@ export default async function MafatihHome({ params }: { params: Promise<{ locale
   const moments = Object.fromEntries(Object.keys(MOMENT_ITEMS).map((m) => [m, t(`moment.${m}`)]));
 
   return (
-    <div className="mx-auto w-full max-w-[680px] px-5 pb-36" style={{ paddingTop: "max(20px, env(safe-area-inset-top))" }}>
+    <div className="mx-auto w-full max-w-[680px] px-5 pb-36" style={{ paddingTop: "max(20px, var(--mf-sat))" }}>
       <header className="flex items-center justify-between gap-3 pt-2">
         <Link href="/" className="text-[0.8rem] font-semibold text-mf-mute">
           {ts("name")}

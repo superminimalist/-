@@ -1,0 +1,24 @@
+/* artifact host: it pads :root by the safe-area insets and may set data-theme on <html> */
+:root { --page-bg: #f2f4f6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page-bg: #0c0d0f; color-scheme: dark; } }
+:root[data-theme="dark"] { --page-bg: #0c0d0f; color-scheme: dark; }
+body { background: var(--page-bg); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 45; background: var(--page-bg); }
+
+.mf { --mf-sat: 0px; --mf-sticky-top: env(safe-area-inset-top, 0px); min-height: 100%; }
+:root[data-theme="dark"] .mf:not([data-theme="light"]) {
+  --mf-bg: #0c0d0f; --mf-card: #18191d; --mf-elev: #212228; --mf-fill: #24262c;
+  --mf-text: #f2f4f6; --mf-sub: #b0b8c1; --mf-mute: #7d8692; --mf-line: #2a2c33;
+  --mf-accent: #33c48c; --mf-accent-soft: rgb(51 196 140 / 0.14); --mf-accent-ink: #66d9ab; --mf-gold: #e2b35a;
+  --mf-bar: rgb(12 13 15 / 0.72); --mf-shadow: 0 0 0 1px rgb(255 255 255 / 0.04);
+  color-scheme: dark;
+}
+:root[data-theme="light"] .mf:not([data-theme="dark"]) {
+  --mf-bg: #f2f4f6; --mf-card: #ffffff; --mf-elev: #ffffff; --mf-fill: #eef0f3;
+  --mf-text: #191f28; --mf-sub: #4e5968; --mf-mute: #8b95a1; --mf-line: #e5e8eb;
+  --mf-accent: #0a9a68; --mf-accent-soft: #e5f5ee; --mf-accent-ink: #057a51; --mf-gold: #b07d1f;
+  --mf-bar: rgb(242 244 246 / 0.78); --mf-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.08);
+  color-scheme: light;
+}
+.mf[data-theme="dark"] ~ *, body:has(.mf[data-theme="dark"]) { background: #0c0d0f; }
+body:has(.mf[data-theme="light"]) { background: #f2f4f6; }

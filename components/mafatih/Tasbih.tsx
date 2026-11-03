@@ -59,7 +59,7 @@ export function TasbihCounter({
   }, []);
 
   return (
-    <div className="mx-auto flex max-w-[560px] flex-col px-5 pb-36" style={{ paddingTop: "max(20px, env(safe-area-inset-top))" }}>
+    <div className="mx-auto flex max-w-[560px] flex-col px-5 pb-36" style={{ paddingTop: "max(20px, var(--mf-sat))" }}>
       <h1 className="mt-5 text-[2.1rem] font-extrabold tracking-[-0.03em]">{labels.title}</h1>
       <p className="mt-1 text-[0.95rem] text-mf-mute">{labels.sub}</p>
 

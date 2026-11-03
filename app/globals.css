@@ -78,6 +78,9 @@ html[lang="ur"] body { font-family: var(--font-urdu); line-height: 2.1; }
   --mf-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.08);
   --mf-ar-font: "Amiri", "Noto Naskh Arabic", serif;
   --mf-scale: 1;
+  /* in-flow safe-area padding; hosts that already pad :root (the artifact build) set these to 0 */
+  --mf-sat: env(safe-area-inset-top, 0px);
+  --mf-sticky-top: 0px;
   color-scheme: light;
   font-family: var(--font-mf);
   -webkit-font-smoothing: antialiased;

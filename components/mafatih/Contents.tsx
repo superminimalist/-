@@ -37,10 +37,10 @@ export function ContentsView({ tree, quick, labels }: { tree: N[]; quick: Quick[
   }, [dq, flat, quick]);
 
   return (
-    <div className="mx-auto max-w-[680px] px-5 pb-36" style={{ paddingTop: "max(20px, env(safe-area-inset-top))" }}>
+    <div className="mx-auto max-w-[680px] px-5 pb-36" style={{ paddingTop: "max(20px, var(--mf-sat))" }}>
       <h1 className="mt-7 text-[2.1rem] font-extrabold tracking-[-0.03em]">{labels.title}</h1>
 
-      <div className="sticky top-0 z-20 -mx-5 px-5 pb-3 pt-3" style={{ background: "linear-gradient(var(--mf-bg) 75%, transparent)" }}>
+      <div className="sticky z-20 -mx-5 px-5 pb-3 pt-3" style={{ top: "var(--mf-sticky-top)", background: "linear-gradient(var(--mf-bg) 75%, transparent)" }}>
         <label className="flex items-center gap-2 rounded-2xl bg-mf-card px-4 py-3 shadow-[var(--mf-shadow)]">
           <IconSearch size={18} className="text-mf-mute" />
           <input

@@ -2,15 +2,11 @@ import "server-only";
 import { getTranslations } from "next-intl/server";
 import { getSlice } from "./content";
 import { ITEMS, type ItemKey } from "./plan";
-import type { Block, ItemView } from "./types";
+import { minutesOf } from "./pure";
+import type { ItemView } from "./types";
 
+export { minutesOf };
 export type { ItemView };
-
-/** recitation pace ≈ 90 Arabic words / min */
-export function minutesOf(blocks: Block[]) {
-  const words = blocks.reduce((n, b) => n + (b.t === "ar" ? b.x.split(" ").length : 0), 0);
-  return Math.max(1, Math.round(words / 90));
-}
 
 export async function itemViews(keys: ItemKey[]): Promise<Record<string, ItemView>> {
   const t = await getTranslations("mafatih.items");

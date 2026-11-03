@@ -3,7 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Reader } from "@/components/mafatih/Reader";
 import { IconBack, IconChevron } from "@/components/mafatih/icons";
-import { breadcrumbs, getIndex, getSection, getTree, neighbours, type TocNode } from "@/lib/mafatih/content";
+import { breadcrumbs, getIndex, getSection, getTree, neighbours } from "@/lib/mafatih/content";
+import { findNode } from "@/lib/mafatih/pure";
 import { minutesOf } from "@/lib/mafatih/items";
 import { readerLabels } from "@/lib/mafatih/labels";
 
@@ -13,15 +14,6 @@ export async function generateMetadata({ params }: { params: Params }) {
   const { id } = await params;
   const entry = (await getIndex()).find((e) => e.id === id);
   return { title: entry?.title };
-}
-
-function findNode(nodes: TocNode[], id: string): TocNode | null {
-  for (const n of nodes) {
-    if (n.id === id) return n;
-    const hit = findNode(n.children, id);
-    if (hit) return hit;
-  }
-  return null;
 }
 
 export default async function ReadPage({ params }: { params: Params }) {
@@ -38,7 +30,7 @@ export default async function ReadPage({ params }: { params: Params }) {
     const node = findNode(await getTree(), id);
     const t = await getTranslations("mafatih");
     return (
-      <div className="mx-auto max-w-[680px] px-5 pb-24" style={{ paddingTop: "max(16px, env(safe-area-inset-top))" }}>
+      <div className="mx-auto max-w-[680px] px-5 pb-24" style={{ paddingTop: "max(16px, var(--mf-sat))" }}>
         <Link href="/mafatih/contents" className="mf-press inline-flex items-center gap-0.5 py-2 text-mf-accent-ink">
           <IconBack size={20} /> {t("contents.title")}
         </Link>

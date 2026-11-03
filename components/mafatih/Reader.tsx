@@ -158,7 +158,7 @@ export function Reader(p: ReaderProps) {
   return (
     <div className="min-h-dvh pb-24">
       {/* top bar */}
-      <div className="mf-bar sticky top-0 z-30 border-b border-transparent" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+      <div className="mf-bar sticky z-30 border-b border-transparent" style={{ top: "var(--mf-sticky-top)", paddingTop: "var(--mf-sat)" }}>
         <div className={`mx-auto flex h-12 max-w-[760px] items-center gap-1 px-2 transition-[border-color] ${scrolled ? "" : ""}`}>
           <button onClick={goBack} aria-label={L.back} className="mf-press flex h-10 items-center gap-0.5 rounded-full px-2 text-mf-accent-ink">
             <IconBack size={22} />
