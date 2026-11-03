@@ -55,6 +55,8 @@ mark{background:#ffe48a;color:#000}
 .hist div{padding:6px 0;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:8px}
 .hist div:hover{color:var(--acc)}
 .hist small{color:var(--mut);flex:none}
+.hist span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist .del{border:0;background:none;color:var(--mut);padding:0 4px;font-size:16px}
 .hidden{display:none}
 @media (max-width:600px){
   .wrap{padding:calc(12px + env(safe-area-inset-top)) 12px calc(60px + env(safe-area-inset-bottom))}
@@ -98,7 +100,7 @@ mark{background:#ffe48a;color:#000}
     </div>
     <div id="prog" class="hidden">
       <div class="bar"><i id="barf"></i></div>
-      <div class="stage" id="stage"></div>
+      <div class="row" style="justify-content:space-between"><div class="stage" id="stage"></div><button id="cancel" class="hidden">취소</button></div>
       <div class="log" id="log"></div>
     </div>
   </div>
@@ -125,7 +127,7 @@ mark{background:#ffe48a;color:#000}
   </div>
 
   <div class="card hidden" id="histCard">
-    <div class="stage" style="margin-bottom:6px">최근 작업 (서버 재시작 전까지 유지)</div>
+    <div class="stage" style="margin-bottom:6px">최근 작업 (완료된 건 PC에 저장됨)</div>
     <div class="hist" id="hist"></div>
   </div>
 </div>
@@ -160,39 +162,47 @@ async function init() {
   if (q.get('lang') && cfg.langs[q.get('lang')]) $('#lang').value = q.get('lang');
   if (q.get('url')) {  // iOS 단축어/공유 시트: /?url=<링크>
     $('#url').value = q.get('url');
-    history.replaceState(null, '', location.pathname);
+    q.delete('url'); q.delete('lang');  // key= 는 남김 (홈 화면 추가 시 필요)
+    history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : ''));
     return start();
   }
   const last = store.get('lastJob', null);
-  if (last) fetch('/api/jobs/' + last).then(r => r.ok ? r.json() : null).then(j => j && show(j));
+  if (last) poll(last, true);  // 진행 중이면 이어서 폴링 (iOS가 앱을 내렸다 다시 띄운 경우)
 }
 
+let busy = false;
 async function start() {
   const url = $('#url').value.trim();
-  if (!url) return;
-  $('#go').disabled = true;
-  const r = await fetch('/api/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url, lang: $('#lang').value, mode: $('#mode').value, model: $('#model').value, translate: $('#translate').checked }) });
-  const j = await r.json();
-  $('#go').disabled = false;
+  if (!url || busy) return;
+  busy = $('#go').disabled = true;
+  let r, j;
+  try {
+    r = await fetch('/api/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, lang: $('#lang').value, mode: $('#mode').value, model: $('#model').value, translate: $('#translate').checked }) });
+    j = await r.json();
+  } catch { r = { ok: false }; j = { detail: 'PC 서버에 연결 안 됨 — PC가 켜져 있고 app.py가 실행 중인지 확인' }; }
+  finally { busy = $('#go').disabled = false; }
+  if (r.ok && j.cached) toast('이전 결과 불러옴');
   if (!r.ok) { $('#prog').classList.remove('hidden'); $('#stage').innerHTML = `<span class="err">${esc(Array.isArray(j.detail) ? j.detail.map(d => d.msg).join(', ') : (j.detail || '오류'))}</span>`; return; }
   store.set('lastJob', j.id);
   poll(j.id);
 }
 
-function poll(id) {
+function poll(id, quiet) {
   clearTimeout(pollT);
-  fetch('/api/jobs/' + id).then(r => r.json()).then(j => {
+  fetch('/api/jobs/' + id).then(r => { if (r.status === 404) throw 404; return r.json(); }).then(j => {
     show(j);
     if (j.status === 'queued' || j.status === 'running') pollT = setTimeout(() => poll(id), 700);
     else refreshHist();
-  }).catch(() => pollT = setTimeout(() => poll(id), 2000));
+  }).catch(e => { if (e !== 404 && !quiet) pollT = setTimeout(() => poll(id), 2000); });
 }
 
 function show(j) {
   $('#prog').classList.remove('hidden');
   $('#barf').style.width = (j.progress * 100) + '%';
   $('#stage').innerHTML = j.status === 'error' ? `<span class="err">오류: ${esc(j.error || '')}</span>` : esc(j.stage);
+  $('#cancel').classList.toggle('hidden', !(j.status === 'queued' || j.status === 'running'));
+  $('#cancel').dataset.id = j.id;
   $('#log').textContent = (j.log || []).join('\n');
   if (j.status !== 'done') { if (j.status !== 'error') $('#res').classList.add('hidden'); return; }
   cur = j;
@@ -217,10 +227,23 @@ async function refreshHist() {
   const list = await fetch('/api/jobs').then(r => r.json()).catch(() => []);
   $('#histCard').classList.toggle('hidden', !list.length);
   $('#hist').innerHTML = list.map(j =>
-    `<div data-id="${j.id}"><small>${new Date(j.created * 1000).toLocaleTimeString()}</small><span>${esc(j.title || j.url)}</span><small>${j.status === 'done' ? '' : j.status}</small></div>`).join('');
+    `<div data-id="${j.id}"><small>${new Date(j.created * 1000).toLocaleTimeString()}</small><span>${esc(j.title || j.url)}</span><small>${({ done: '', queued: '대기', running: '진행 중', error: '오류', cancelled: '취소됨' })[j.status] ?? j.status}</small>${j.status === 'queued' || j.status === 'running' ? '' : '<button class="del" title="삭제">×</button>'}</div>`).join('');
 }
 
-$('#hist').onclick = e => { const d = e.target.closest('[data-id]'); if (d) { store.set('lastJob', d.dataset.id); poll(d.dataset.id); } };
+$('#hist').onclick = async e => {
+  const d = e.target.closest('[data-id]'); if (!d) return;
+  if (e.target.classList.contains('del')) {
+    await fetch('/api/jobs/' + d.dataset.id, { method: 'DELETE' });
+    if (cur && cur.id === d.dataset.id) { cur = null; $('#res').classList.add('hidden'); $('#prog').classList.add('hidden'); }
+    return refreshHist();
+  }
+  store.set('lastJob', d.dataset.id); poll(d.dataset.id);
+};
+$('#cancel').onclick = async () => { await fetch(`/api/jobs/${$('#cancel').dataset.id}/cancel`, { method: 'POST' }); };
+document.addEventListener('visibilitychange', () => {  // iOS 백그라운드 복귀 시 즉시 갱신
+  const last = store.get('lastJob', null);
+  if (document.visibilityState === 'visible' && last && !(cur && cur.id === last)) poll(last, true);
+});
 $('#go').onclick = start;
 $('#url').addEventListener('keydown', e => { if (e.key === 'Enter') start(); });
 $('#url').addEventListener('paste', e => {
@@ -251,7 +274,8 @@ $('#find').oninput = e => {
     const sp = el.querySelector('span'), t = cur.result.segments[i].text;
     const hit = !q || t.toLowerCase().includes(q);
     el.style.display = hit ? '' : 'none';
-    sp.innerHTML = q && hit ? esc(t).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => `<mark>${m}</mark>`) : esc(t);
+    sp.innerHTML = q && hit ? t.split(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'))
+      .map((p, k) => k % 2 ? `<mark>${esc(p)}</mark>` : esc(p)).join('') : esc(t);
   });
 };
 init();

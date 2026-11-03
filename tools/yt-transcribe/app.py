@@ -49,6 +49,7 @@ MODELS = ["large-v3-turbo", "large-v3", "medium", "small"]
 DEFAULT_MODEL = os.environ.get("WHISPER_MODEL", "large-v3-turbo")
 COOKIES_FILE = os.environ.get("YT_COOKIES_FILE") or (str(HERE / "cookies.txt") if (HERE / "cookies.txt").exists() else None)
 COOKIES_BROWSER = os.environ.get("YT_COOKIES_BROWSER")  # chrome / firefox / edge ...
+DATA_DIR = Path(os.environ.get("YTT_DATA_DIR") or HERE / "data")  # 완료된 결과 — 재시작해도 유지
 
 _ID_RE = re.compile(r"(?:[?&]v=|/shorts/|/live/|/embed/|/v/|youtu\.be/)([A-Za-z0-9_-]{11})")
 
@@ -81,7 +82,28 @@ class Job:
         self.error: str | None = None
         self.result: dict | None = None
         self.created = time.time()
+        self.cancelled = False
         self._lock = threading.Lock()
+
+    def cache_key(self) -> str:
+        o = self.opts
+        return f"{parse_video_id(self.url)}|{o['lang']}|{o['mode']}|{o['model']}|{int(bool(o['translate']))}"
+
+    def save(self):
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        d = self.public()
+        d["opts"] = self.opts
+        tmp = DATA_DIR / f"{self.id}.json.tmp"
+        tmp.write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(DATA_DIR / f"{self.id}.json")
+
+    @classmethod
+    def load(cls, path: Path) -> "Job":
+        d = json.loads(path.read_text(encoding="utf-8"))
+        j = cls(d["url"], d["opts"])
+        j.id, j.created, j.result, j.log = d["id"], d["created"], d["result"], d.get("log", [])
+        j.status, j.stage, j.progress = "done", "완료", 1.0
+        return j
 
     def set(self, **kw):
         with self._lock:
@@ -107,6 +129,29 @@ class Job:
 
 JOBS: dict[str, Job] = {}
 EXEC = ThreadPoolExecutor(max_workers=1)  # Whisper는 GPU/CPU 하나 — 순서대로
+
+
+def load_saved_jobs():
+    if not DATA_DIR.is_dir():
+        return
+    for f in DATA_DIR.glob("*.json"):
+        try:
+            j = Job.load(f)
+            JOBS[j.id] = j
+        except Exception as e:
+            print(f"! {f.name} 읽기 실패: {e}", file=sys.stderr)
+
+
+def find_cached(job: Job) -> Job | None:
+    key = job.cache_key()
+    for j in sorted(JOBS.values(), key=lambda j: -j.created):
+        if j.status == "done" and j.cache_key() == key:
+            return j
+    return None
+
+
+class Cancelled(Exception):
+    pass
 
 
 # ---------------------------------------------------------------- captions
@@ -236,6 +281,8 @@ def download_audio(vid: str, workdir: Path, job: Job) -> tuple[Path, dict]:
             tot = d.get("total_bytes") or d.get("total_bytes_estimate")
             if tot:
                 job.set(progress=0.02 + 0.13 * d.get("downloaded_bytes", 0) / tot)
+        if job.cancelled:
+            raise Cancelled()
 
     opts = {
         "format": "bestaudio/best",
@@ -279,6 +326,8 @@ def whisper_transcribe(vid: str, lang: str, model_size: str, job: Job) -> dict:
         dur = tinfo.duration or float(info.get("duration") or 0) or 1.0
         out = []
         for s in segments:  # generator — 여기서 실제 디코딩
+            if job.cancelled:
+                raise Cancelled()
             t = s.text.strip()
             if t:
                 out.append({"start": round(s.start, 2), "end": round(s.end, 2), "text": t})
@@ -291,6 +340,8 @@ def whisper_transcribe(vid: str, lang: str, model_size: str, job: Job) -> dict:
 
 def run_job(job: Job):
     o = job.opts
+    if job.cancelled:  # 대기열에 있는 동안 취소됨
+        return
     job.set(status="running")
     try:
         vid = parse_video_id(job.url)
@@ -310,9 +361,20 @@ def run_job(job: Job):
         res["video_id"] = vid
         res["title"] = res.get("title") or fetch_title(vid) or vid
         res["rtl"] = LANGS.get(res.get("language") or "", {}).get("rtl", res.get("language") in ("ar", "fa", "ur", "he", "ps"))
-        job.set(result=res, status="done", stage="완료", progress=1.0)
         job.say(f"완료 · {len(res['segments'])}개 구간 · {res['source']}")
+        job.set(result=res, status="done", stage="완료", progress=1.0)
+        try:
+            job.save()
+        except OSError as e:
+            job.say(f"결과 저장 실패 (메모리엔 있음): {e}")
+    except Cancelled:
+        job.set(status="cancelled", stage="취소됨")
+        job.say("사용자가 취소함")
     except Exception as e:
+        if job.cancelled:  # yt-dlp가 Cancelled를 DownloadError로 감싸서 올림
+            job.set(status="cancelled", stage="취소됨")
+            job.say("사용자가 취소함")
+            return
         msg = str(e).strip().splitlines()[0] if str(e).strip() else type(e).__name__
         job.set(status="error", error=msg, stage="오류")
         job.say("".join(traceback.format_exception_only(type(e), e)).strip())
@@ -393,12 +455,46 @@ def lan_addresses() -> list[str]:
     return sorted(ip for ip in ips if not ip.startswith("127."))
 
 
-def build_app():
-    from fastapi import FastAPI, HTTPException
-    from fastapi.responses import FileResponse, Response
+def load_token() -> str:
+    """LAN 노출용 접속 키. 재시작해도 폰 북마크가 살아있게 파일에 고정."""
+    if os.environ.get("YTT_TOKEN"):
+        return os.environ["YTT_TOKEN"]
+    import secrets
+    f = DATA_DIR / "token"
+    if f.exists():
+        return f.read_text().strip()
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    tok = secrets.token_urlsafe(9)
+    f.write_text(tok)
+    return tok
+
+
+LOOPBACK = {"127.0.0.1", "::1", "localhost"}
+
+
+def build_app(token: str | None = None):
+    import hmac
+    from fastapi import FastAPI, HTTPException, Request
+    from fastapi.responses import FileResponse, PlainTextResponse, Response
     from pydantic import BaseModel
 
     app = FastAPI(title="YT Transcript")
+    load_saved_jobs()
+
+    def authed(req: Request) -> bool:
+        if not token or (req.client and req.client.host in LOOPBACK):  # PC 본인 / tailscale serve 경유
+            return True
+        given = req.query_params.get("key") or req.cookies.get("ytt_key") or ""
+        return hmac.compare_digest(given, token)
+
+    @app.middleware("http")
+    async def gate(req: Request, call_next):
+        if req.url.path == "/icon.png" or authed(req):
+            resp = await call_next(req)
+            if token and req.query_params.get("key") == token:
+                resp.set_cookie("ytt_key", token, max_age=400 * 86400, httponly=True, samesite="lax")
+            return resp
+        return PlainTextResponse("접속 키가 필요합니다 — PC 터미널에 찍힌 '폰에서' 주소(…?key=…)로 여세요.", status_code=401)
 
     class JobIn(BaseModel):
         url: str
@@ -419,8 +515,10 @@ def build_app():
 
     @app.get("/manifest.webmanifest")
     def manifest():
+        # iOS 홈 화면 앱은 Safari와 쿠키 저장소가 따로라 키를 시작 URL에 박아둠
+        start = f"/?key={token}" if token else "/"
         return Response(json.dumps({
-            "name": "YT Transcript", "short_name": "Transcript", "start_url": "/", "display": "standalone",
+            "name": "YT Transcript", "short_name": "Transcript", "start_url": start, "display": "standalone",
             "background_color": "#f6f6f4", "theme_color": "#c4302b",
             "icons": [{"src": "/icon.png", "sizes": "180x180", "type": "image/png"}],
         }), media_type="application/manifest+json")
@@ -443,6 +541,12 @@ def build_app():
         if j.model not in MODELS:
             raise HTTPException(400, "model")
         job = Job(j.url.strip(), j.model_dump())
+        hit = find_cached(job)
+        if hit:
+            return {"id": hit.id, "cached": True}
+        for other in JOBS.values():  # 같은 요청이 이미 대기/진행 중이면 그걸 돌려줌 (붙여넣기+Enter 중복 등)
+            if other.status in ("queued", "running") and other.cache_key() == job.cache_key():
+                return {"id": other.id, "cached": False}
         JOBS[job.id] = job
         EXEC.submit(run_job, job)
         return {"id": job.id}
@@ -456,6 +560,28 @@ def build_app():
         if jid not in JOBS:
             raise HTTPException(404)
         return JOBS[jid].public()
+
+    @app.post("/api/jobs/{jid}/cancel")
+    def cancel(jid: str):
+        job = JOBS.get(jid)
+        if not job:
+            raise HTTPException(404)
+        if job.status in ("queued", "running"):
+            job.cancelled = True
+            if job.status == "queued":
+                job.set(status="cancelled", stage="취소됨")
+            else:
+                job.set(stage="취소하는 중…")
+        return {"status": job.status}
+
+    @app.delete("/api/jobs/{jid}")
+    def delete(jid: str):
+        job = JOBS.get(jid)
+        if not job or job.status in ("queued", "running"):
+            raise HTTPException(409 if job else 404)
+        del JOBS[jid]
+        (DATA_DIR / f"{jid}.json").unlink(missing_ok=True)
+        return {"ok": True}
 
     @app.get("/api/jobs/{jid}/download")
     def download(jid: str, fmt: str = "txt"):
@@ -517,16 +643,18 @@ def main():
         return
 
     import uvicorn
-    lan = a.host in ("0.0.0.0", "::")
+    lan = a.host not in LOOPBACK
+    token = load_token() if lan else None
     url = f"http://{'127.0.0.1' if lan else a.host}:{a.port}"
     if not a.no_browser:
         import webbrowser
         threading.Timer(1.0, lambda: webbrowser.open(url)).start()
     print(f"→ {url}")
     if lan:
-        for ip in lan_addresses():
-            print(f"→ 폰에서 (같은 와이파이): http://{ip}:{a.port}")
-    uvicorn.run(build_app(), host=a.host, port=a.port, log_level="warning")
+        for ip in ([a.host] if a.host not in ("0.0.0.0", "::") else lan_addresses()):
+            print(f"→ 폰에서 (같은 와이파이): http://{ip}:{a.port}/?key={token}")
+        print("  (키 바꾸려면 data/token 삭제 후 재시작)")
+    uvicorn.run(build_app(token), host=a.host, port=a.port, log_level="warning")
 
 
 if __name__ == "__main__":
