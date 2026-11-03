@@ -4,6 +4,19 @@
 
 지원 언어: 영어 · 아랍어 · 중국어 · 프랑스어 · 러시아어 · 스페인어 (UN 공용어) + 페르시아어 · 힌디어 · 우르두어, 그리고 자동 감지.
 
+## 빠른 시작 (PC)
+
+1. **Python 3.10+** 설치 — https://www.python.org/downloads/
+   (Windows는 설치 첫 화면에서 **"Add python.exe to PATH"** 체크)
+2. 코드 받기 — GitHub에서 `tools/yt-transcribe` 브랜치 → **Code → Download ZIP** → 압축 풀기
+   (또는 `git clone -b tools/yt-transcribe https://github.com/superminimalist/-.git`)
+3. `tools/yt-transcribe` 폴더에서 더블클릭
+   - Windows: **`run.bat`**
+   - Mac: **`run.command`** (처음엔 우클릭 → 열기 — 확인 안 된 개발자 경고 때문)
+4. 처음 한 번은 설치로 몇 분 걸림 → 브라우저가 `http://127.0.0.1:8765`로 자동으로 열림 → 링크 붙여넣기
+
+첫 Whisper 실행 땐 모델(~1.6GB, large-v3-turbo)을 받느라 더 걸림. GPU 없는 PC면 모델을 `small`이나 `medium`으로 낮추면 빨라짐 (대신 우르두·페르시아어 정확도 떨어짐).
+
 ## 동작
 
 1. **유튜브 자막** (`youtube-transcript-api`) — 수동 자막 > 자동 자막 > (옵션) 유튜브 자동번역
