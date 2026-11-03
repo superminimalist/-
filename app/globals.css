@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;600&family=Noto+Naskh+Arabic:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&family=Inter:wght@400;500;700&display=swap");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;600&family=Noto+Naskh+Arabic:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&family=Inter:wght@400;500;700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -42,3 +43,121 @@ html[lang="ur"] body { font-family: var(--font-urdu); line-height: 2.1; }
 }
 .card { @apply rounded-xl border border-line bg-panel p-5; }
 .label { @apply mb-1 block text-xs font-medium uppercase tracking-wide text-mute; }
+
+/* ───────────────────────── Mafatih — app-style reading surface ───────────────────────── */
+@theme inline {
+  --color-mf-bg: var(--mf-bg);
+  --color-mf-card: var(--mf-card);
+  --color-mf-elev: var(--mf-elev);
+  --color-mf-fill: var(--mf-fill);
+  --color-mf-text: var(--mf-text);
+  --color-mf-sub: var(--mf-sub);
+  --color-mf-mute: var(--mf-mute);
+  --color-mf-line: var(--mf-line);
+  --color-mf-accent: var(--mf-accent);
+  --color-mf-accent-soft: var(--mf-accent-soft);
+  --color-mf-accent-ink: var(--mf-accent-ink);
+  --color-mf-gold: var(--mf-gold);
+  --font-mf: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", system-ui, sans-serif;
+}
+
+.mf {
+  --mf-bg: #f2f4f6;
+  --mf-card: #ffffff;
+  --mf-elev: #ffffff;
+  --mf-fill: #eef0f3;
+  --mf-text: #191f28;
+  --mf-sub: #4e5968;
+  --mf-mute: #8b95a1;
+  --mf-line: #e5e8eb;
+  --mf-accent: #0a9a68;
+  --mf-accent-soft: #e5f5ee;
+  --mf-accent-ink: #057a51;
+  --mf-gold: #b07d1f;
+  --mf-bar: rgb(242 244 246 / 0.78);
+  --mf-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.08);
+  --mf-ar-font: "Amiri", "Noto Naskh Arabic", serif;
+  --mf-scale: 1;
+  color-scheme: light;
+  font-family: var(--font-mf);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+  -webkit-tap-highlight-color: transparent;
+}
+.mf[data-font="naskh"] { --mf-ar-font: "Noto Naskh Arabic", "Amiri", serif; }
+.mf[data-font="scheherazade"] { --mf-ar-font: "Scheherazade New", "Amiri", serif; }
+
+.mf[data-theme="dark"] {
+  --mf-bg: #0c0d0f; --mf-card: #18191d; --mf-elev: #212228; --mf-fill: #24262c;
+  --mf-text: #f2f4f6; --mf-sub: #b0b8c1; --mf-mute: #7d8692; --mf-line: #2a2c33;
+  --mf-accent: #33c48c; --mf-accent-soft: rgb(51 196 140 / 0.14); --mf-accent-ink: #66d9ab; --mf-gold: #e2b35a;
+  --mf-bar: rgb(12 13 15 / 0.72); --mf-shadow: 0 0 0 1px rgb(255 255 255 / 0.04);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  .mf:not([data-theme="light"]) {
+    --mf-bg: #0c0d0f; --mf-card: #18191d; --mf-elev: #212228; --mf-fill: #24262c;
+    --mf-text: #f2f4f6; --mf-sub: #b0b8c1; --mf-mute: #7d8692; --mf-line: #2a2c33;
+    --mf-accent: #33c48c; --mf-accent-soft: rgb(51 196 140 / 0.14); --mf-accent-ink: #66d9ab; --mf-gold: #e2b35a;
+    --mf-bar: rgb(12 13 15 / 0.72); --mf-shadow: 0 0 0 1px rgb(255 255 255 / 0.04);
+    color-scheme: dark;
+  }
+}
+html:has(.mf) { background: #f2f4f6; }
+@media (prefers-color-scheme: dark) { html:has(.mf:not([data-theme="light"])) { background: #0c0d0f; } }
+html:has(.mf[data-theme="dark"]) { background: #0c0d0f; }
+html:has(.mf[data-theme="light"]) { background: #f2f4f6; }
+html[lang="ur"]:has(.mf) body { line-height: normal; }
+
+.mf-card { background: var(--mf-card); border-radius: 22px; box-shadow: var(--mf-shadow); }
+.mf-bar { background: var(--mf-bar); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); }
+.mf-press { transition: transform 160ms cubic-bezier(.2,.8,.2,1), background-color 160ms, opacity 160ms; }
+.mf-press:active { transform: scale(0.97); }
+.mf-row:active { background: var(--mf-fill); }
+.mf-noscrollbar { scrollbar-width: none; }
+.mf-noscrollbar::-webkit-scrollbar { display: none; }
+
+.mf-ar {
+  font-family: var(--mf-ar-font);
+  font-size: calc(1.62rem * var(--mf-scale));
+  line-height: 2.15;
+  text-align: justify;
+  text-align-last: right;
+  word-spacing: 0.04em;
+  font-feature-settings: "kern", "liga", "calt";
+}
+.mf-ar-focus {
+  font-family: var(--mf-ar-font);
+  font-size: calc(2rem * var(--mf-scale));
+  line-height: 2.25;
+  text-wrap: balance;
+}
+.mf-verse { color: var(--mf-accent); font-size: 0.82em; padding-inline: 0.15em; white-space: nowrap; }
+.mf-en { font-size: calc(0.95rem * min(var(--mf-scale), 1.25)); line-height: 1.7; }
+
+.mf-tone-dawn   { background: linear-gradient(135deg, #ffb48a 0%, #f78fb3 55%, #a78bfa 100%); }
+.mf-tone-day    { background: linear-gradient(135deg, #4fc3f7 0%, #3b82f6 100%); }
+.mf-tone-dusk   { background: linear-gradient(135deg, #fbbf24 0%, #f97316 50%, #e11d48 100%); }
+.mf-tone-night  { background: linear-gradient(135deg, #312e81 0%, #1e1b4b 60%, #0f172a 100%); }
+.mf-tone-green  { background: linear-gradient(135deg, #34d399 0%, #059669 100%); }
+.mf-tone-gold   { background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); }
+.mf-tone-rose   { background: linear-gradient(135deg, #fb7185 0%, #be123c 100%); }
+.mf-tone-indigo { background: linear-gradient(135deg, #818cf8 0%, #4338ca 100%); }
+
+@keyframes mf-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes mf-sheet { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes mf-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mf-pop { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
+@keyframes mf-shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+.mf-rise { animation: mf-rise 420ms cubic-bezier(.2,.8,.2,1) both; }
+.mf-sheet { animation: mf-sheet 320ms cubic-bezier(.2,.9,.25,1) both; }
+.mf-fade { animation: mf-fade 220ms ease-out both; }
+.mf-pop { animation: mf-pop 260ms ease-out; }
+.mf-skeleton {
+  background: linear-gradient(90deg, var(--mf-fill) 25%, var(--mf-line) 50%, var(--mf-fill) 75%);
+  background-size: 200% 100%;
+  animation: mf-shimmer 1.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mf-rise, .mf-sheet, .mf-fade, .mf-pop, .mf-skeleton { animation: none; }
+}

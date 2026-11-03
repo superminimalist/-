@@ -10,7 +10,8 @@
     "admin": "Admin",
     "login": "Sign in",
     "logout": "Sign out",
-    "world": "3D Imambargah"
+    "world": "3D Imambargah",
+    "mafatih": "Mafatih"
   },
   "status": {
     "scheduled": "Scheduled",
@@ -148,6 +149,279 @@
       "hall": "Imambargah Hall",
       "mosque": "Asfi Mosque",
       "baoli": "Shahi Baoli"
+    }
+  },
+  "mafatih": {
+    "name": "Mafatih al-Jinan",
+    "tagline": "Keys to the Heavens — prayers for every day",
+    "tabs": {
+      "today": "Today",
+      "contents": "Contents",
+      "tasbih": "Tasbih",
+      "saved": "Saved"
+    },
+    "today": {
+      "title": "Today",
+      "now": "Right for this hour",
+      "start": "Begin",
+      "fridayEve": "Tonight is the night of Friday",
+      "fridayEveSub": "A night for Dua Kumayl",
+      "week": "Day by day",
+      "dedicated": "The day of {names}",
+      "dua": "Supplication of the day",
+      "ziyarah": "Ziyarah of the day",
+      "special": "Special to this day",
+      "daily": "Every day",
+      "dailySub": "After prayers, morning and evening",
+      "famous": "Most loved",
+      "continue": "Continue reading",
+      "allContents": "Browse all contents",
+      "minutes": "{n} min"
+    },
+    "moment": {
+      "dawn": "Dawn",
+      "morning": "Morning",
+      "noon": "Noon",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "night": "Night"
+    },
+    "owners": {
+      "6": "the Prophet Muhammad ﷺ",
+      "0": "Imam Ali and Fatima al-Zahra",
+      "1": "Imam al-Hasan and Imam al-Husayn",
+      "2": "Imams al-Sajjad, al-Baqir, al-Sadiq",
+      "3": "Imams al-Kazim, al-Rida, al-Jawad, al-Hadi",
+      "4": "Imam al-Hasan al-Askari",
+      "5": "Imam al-Mahdi"
+    },
+    "reader": {
+      "settings": "Display",
+      "fontSize": "Text size",
+      "font": "Arabic typeface",
+      "guide": "English guidance",
+      "awake": "Keep screen on",
+      "theme": "Appearance",
+      "themeSystem": "Auto",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "focus": "One passage at a time",
+      "close": "Close",
+      "back": "Back",
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Book p. {page}",
+      "save": "Save",
+      "saved": "Saved",
+      "progress": "{i} / {n}",
+      "finish": "Completed",
+      "finishSub": "May it be accepted. Remember us in your prayers.",
+      "empty": "This heading continues in the entries below.",
+      "tapHint": "Tap the sides to move",
+      "minutes": "About {n} min",
+      "nextLabel": "Up next",
+      "prevLabel": "Previous"
+    },
+    "contents": {
+      "title": "Contents",
+      "search": "Search titles",
+      "empty": "Nothing found",
+      "count": "{n}",
+      "surahs": "Qur'anic Surahs"
+    },
+    "tasbih": {
+      "title": "Tasbih of Fatima",
+      "sub": "A hundred praises after prayer",
+      "tap": "Tap anywhere to count",
+      "reset": "Reset",
+      "done": "Complete",
+      "again": "Once more",
+      "read": "Read about it",
+      "vibrate": "Haptics",
+      "total": "{n} total"
+    },
+    "saved": {
+      "title": "Saved",
+      "bookmarks": "Saved prayers",
+      "recents": "Recently read",
+      "empty": "Tap ☆ on a prayer to save it here",
+      "noRecents": "Nothing read yet",
+      "clear": "Clear history"
+    },
+    "source": "Text · Mafatih al-Jinan by Shaykh Abbas Qummi · English by erfan.ir · alhassanain.org",
+    "items": {
+      "fajr": {
+        "t": "After Fajr",
+        "s": "Taqibat of the dawn prayer"
+      },
+      "zuhr": {
+        "t": "After Zuhr",
+        "s": "Taqibat of the noon prayer"
+      },
+      "asr": {
+        "t": "After Asr",
+        "s": "Taqibat of the afternoon prayer"
+      },
+      "maghrib": {
+        "t": "After Maghrib",
+        "s": "Taqibat of the sunset prayer"
+      },
+      "isha": {
+        "t": "After Isha",
+        "s": "Taqibat of the night prayer"
+      },
+      "taqibat": {
+        "t": "General Taqibat",
+        "s": "After every obligatory prayer"
+      },
+      "tasbih": {
+        "t": "Tasbih of Fatima",
+        "s": "34 · 33 · 33"
+      },
+      "sabah": {
+        "t": "Dua al-Sabah",
+        "s": "Imam Ali's morning supplication"
+      },
+      "sunrise": {
+        "t": "Sunrise & Sunset",
+        "s": "Supplications at the edges of the day"
+      },
+      "shukr": {
+        "t": "Sajdat al-Shukr",
+        "s": "Prostration of thanksgiving"
+      },
+      "ahd": {
+        "t": "Dua al-Ahd",
+        "s": "Morning covenant with Imam al-Mahdi"
+      },
+      "nightPrayer": {
+        "t": "Night Prayer",
+        "s": "Method and supplications"
+      },
+      "duaSat": {
+        "t": "Saturday supplication",
+        "s": "Sahifa Sajjadiyya appendix"
+      },
+      "duaSun": {
+        "t": "Sunday supplication",
+        "s": "Sahifa Sajjadiyya appendix"
+      },
+      "duaMon": {
+        "t": "Monday supplication",
+        "s": "Sahifa Sajjadiyya appendix"
+      },
+      "duaTue": {
+        "t": "Tuesday supplication",
+        "s": "Sahifa Sajjadiyya appendix"
+      },
+      "duaWed": {
+        "t": "Wednesday supplication",
+        "s": "Sahifa Sajjadiyya appendix"
+      },
+      "duaThu": {
+        "t": "Thursday supplication",
+        "s": "Sahifa Sajjadiyya appendix"
+      },
+      "duaFri": {
+        "t": "Friday supplication",
+        "s": "Sahifa Sajjadiyya appendix"
+      },
+      "zSat": {
+        "t": "Ziyarah of the Prophet",
+        "s": "Saturday"
+      },
+      "zSunAli": {
+        "t": "Ziyarah of Imam Ali",
+        "s": "Sunday"
+      },
+      "zSunFatima": {
+        "t": "Ziyarah of Fatima al-Zahra",
+        "s": "Sunday"
+      },
+      "zMonHasan": {
+        "t": "Ziyarah of Imam al-Hasan",
+        "s": "Monday"
+      },
+      "zMonHusayn": {
+        "t": "Ziyarah of Imam al-Husayn",
+        "s": "Monday"
+      },
+      "zTue": {
+        "t": "Ziyarah of Imams Sajjad, Baqir, Sadiq",
+        "s": "Tuesday"
+      },
+      "zWed": {
+        "t": "Ziyarah of Imams Kazim, Rida, Jawad, Hadi",
+        "s": "Wednesday"
+      },
+      "zThu": {
+        "t": "Ziyarah of Imam al-Askari",
+        "s": "Thursday"
+      },
+      "zFri": {
+        "t": "Ziyarah of Imam al-Mahdi",
+        "s": "Friday"
+      },
+      "kumayl": {
+        "t": "Dua Kumayl",
+        "s": "Every Thursday night"
+      },
+      "fridayNight": {
+        "t": "Rituals of Friday night",
+        "s": "From Thursday sunset"
+      },
+      "friday": {
+        "t": "Rites of Friday",
+        "s": "Recommended acts on Friday"
+      },
+      "fridayAsr": {
+        "t": "Friday Asr",
+        "s": "Including the Salawat"
+      },
+      "tawassul": {
+        "t": "Dua Tawassul",
+        "s": "Seeking the intercession of the Fourteen"
+      },
+      "jawshan": {
+        "t": "Dua Jawshan al-Kabir",
+        "s": "The thousand names"
+      },
+      "mujeer": {
+        "t": "Dua Mujeer",
+        "s": "Mid-Ramadan nights"
+      },
+      "simat": {
+        "t": "Dua Simat",
+        "s": "Friday at sunset"
+      },
+      "mashlool": {
+        "t": "Dua Mashlool",
+        "s": "The supplication of healing"
+      },
+      "faraj": {
+        "t": "Dua Faraj",
+        "s": "For the Patron of the Age"
+      },
+      "ashura": {
+        "t": "Ziyarah Ashura",
+        "s": "To Imam al-Husayn"
+      },
+      "warith": {
+        "t": "Ziyarah Warith",
+        "s": "Heir of the Prophets"
+      },
+      "jamia": {
+        "t": "Ziyarah Jamia Kabira",
+        "s": "For all the Imams"
+      },
+      "munajat": {
+        "t": "The Fifteen Munajat",
+        "s": "Whispered prayers of Imam Sajjad"
+      },
+      "yasin": {
+        "t": "Surah Yasin",
+        "s": "The heart of the Qur'an"
+      }
     }
   }
 }

@@ -77,3 +77,23 @@ components/world/
   Avatar.tsx       쿠르타+토피 블록 캐릭터
   usePlaza.ts      realtime 채널
 ```
+
+## 마파티훌 지난 (`/mafatih`)
+
+셰이크 압바스 꿈미의 Mafatih al-Jinan(아랍어 원문 + 영어 안내, alhassanain.org PDF) 전체 650개 항목. 헤더 없는 앱형 화면, 라이트/다크 모드 지원.
+
+- **오늘** — 지금 시간대에 맞는 기도, 요일별 두아·지야라트(토요일 = 예언자 … 금요일 = 이맘 마흐디), 목요일 밤 쿠마일 알림, 매일 드리는 기도, 자주 찾는 기도, 이어 읽기
+- **리더** — 글자 크기/아랍어 글꼴(Amiri·Naskh·Scheherazade)/테마, 영어 안내 켜고 끄기, 화면 켜두기(Wake Lock), 한 구절씩 읽기(스와이프·탭·방향키), 진행률 저장
+- **목차** — 섹션별 펼치기 + 검색(한글 큐레이션 이름 / 영문 제목)
+- **타스비흐** — 파띠마 타스비흐 34·33·33 카운터(진동)
+- **보관함** — 별표, 최근 읽은 기도 (localStorage)
+
+```
+content/mafatih/            추출된 본문 (index.json + s/<id>.json)
+scripts/mafatih/extract.py  PDF → JSON (PyMuPDF; 합자 하라카트 순서·줄바꿈·꾸란 절번호 복원)
+scripts/mafatih/messages.py 마파티흐 UI 문자열 5개 언어 → messages/*.json
+lib/mafatih/plan.ts         요일/매일/자주 찾는 기도 ↔ 본문 위치 매핑
+components/mafatih/         Shell(탭바), Today, Reader, Contents, Tasbih, Saved
+```
+
+본문 재생성: `pip install pymupdf && python3 -I scripts/mafatih/extract.py <pdf> content/mafatih`

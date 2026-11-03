@@ -19,6 +19,7 @@ export async function Header() {
         </Link>
         <nav className="flex items-center gap-4 text-sm text-mute">
           <Link href="/world" className="font-medium text-accent hover:brightness-125">{t("world")}</Link>
+          <Link href="/mafatih" className="font-medium text-gold hover:brightness-110">{t("mafatih")}</Link>
           <Link href="/schedule" className="hover:text-text">{t("schedule")}</Link>
           <Link href="/library" className="hover:text-text">{t("library")}</Link>
           {isStaff(profile) && (

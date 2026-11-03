@@ -2,7 +2,6 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, isRtl } from "@/i18n/routing";
-import { Header } from "@/components/Header";
 
 // per-user header (auth cookie) → every page renders on request
 export const dynamic = "force-dynamic";
@@ -31,10 +30,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"}>
       <body>
-        <NextIntlClientProvider>
-          <Header />
-          <main className="mx-auto w-full max-w-6xl px-4 py-8">{children}</main>
-        </NextIntlClientProvider>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
   );
