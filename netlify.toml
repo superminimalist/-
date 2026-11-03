@@ -1,0 +1,16 @@
+# Netlify: zero-config deploy. Next.js runtime is auto-installed (@netlify/plugin-nextjs).
+# Mafatih needs no env vars; Supabase/LiveKit pages need the .env.example values set in the Netlify UI.
+[build]
+  command = "pnpm build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# site root opens the prayer book until Supabase is configured
+[[redirects]]
+  from = "/"
+  to = "/ko/mafatih"
+  status = 302
+  force = true
