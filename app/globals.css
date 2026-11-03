@@ -136,6 +136,8 @@ html[lang="ur"]:has(.mf) body { line-height: normal; }
   text-wrap: balance;
 }
 .mf-verse { color: var(--mf-accent); font-size: 0.82em; padding-inline: 0.15em; white-space: nowrap; }
+.mf-roman { font-size: calc(0.92rem * min(var(--mf-scale), 1.3)); line-height: 1.65; font-style: italic; letter-spacing: 0; }
+.mf-tr { font-size: calc(0.98rem * min(var(--mf-scale), 1.3)); line-height: 1.75; letter-spacing: -0.005em; word-break: keep-all; }
 .mf-en { font-size: calc(0.95rem * min(var(--mf-scale), 1.25)); line-height: 1.7; }
 
 .mf-tone-dawn   { background: linear-gradient(135deg, #ffb48a 0%, #f78fb3 55%, #a78bfa 100%); }

@@ -73,8 +73,13 @@ function useStored<T>(key: string, fallback: T): [T, (next: T | ((prev: T) => T)
 // ───────────────────────── settings
 export type ArFont = "amiri" | "naskh" | "scheherazade";
 export type Theme = "system" | "light" | "dark";
-export type Settings = { scale: number; font: ArFont; guide: boolean; awake: boolean; theme: Theme; haptics: boolean };
-const SETTINGS: Settings = { scale: 1, font: "amiri", guide: true, awake: true, theme: "system", haptics: true };
+export type Settings = {
+  scale: number; font: ArFont; guide: boolean; awake: boolean; theme: Theme; haptics: boolean;
+  roman: boolean; trEn: boolean; trKo: boolean;
+};
+const SETTINGS: Settings = {
+  scale: 1, font: "amiri", guide: true, awake: true, theme: "system", haptics: true, roman: true, trEn: true, trKo: true,
+};
 export const useSettings = () => useStored<Settings>("mf:settings", SETTINGS);
 
 // ───────────────────────── bookmarks & recents

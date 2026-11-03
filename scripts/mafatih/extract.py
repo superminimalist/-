@@ -182,7 +182,7 @@ def parse_toc(doc):
                 buf = (buf + " " + t).strip()
                 m = re.search(r"\s*\.{3,}\s*(\d+)\s*$", buf) or re.search(r"\s+(\d{2,4})$", buf)
                 if m:
-                    title = clean_ws(buf[: m.start()].rstrip(". "))
+                    title = fix_en(clean_ws(buf[: m.start()].rstrip(". ")))
                     entries.append(dict(level=lvl, title=title, page=int(m.group(1))))
                     buf = ""
     return entries
@@ -190,6 +190,33 @@ def parse_toc(doc):
 
 # ---------------------------------------------------------------- titles
 SMALL = {"of", "the", "and", "on", "in", "for", "to", "at", "al", "e", "a", "by", "from", "with", "after"}
+
+
+# typos / missing spaces in the source PDF's English
+EN_FIXES = [
+    (r"\b(al|l)(?=[A-Z’'])", r"\1-"),  # alHusayn → al-Husayn (also old extractions)
+    (r"\bAliAmeer\b", "Ali, Amir"),
+    (r"\b(Surah|Ali|Abi|Abu|Mirza|Talib|illa|Shaykh|Imam|Sayyid)(?=[A-Z])", r"\1 "),
+    (r"\bAllahuakbar(?=[A-Z])", "Allahu akbar "),
+    (r"’s(?=[A-Z])", "’s "),
+    (r"\bTusiand\b", "Tusi and"),
+    (r"\bMomineen\b", "Mu’minin"),
+    (r"\bMERTIS\b", "MERITS"), (r"\bMertis\b", "Merits"),
+    (r"\bELEVENTHN\b", "ELEVENTH"), (r"\bEleventhn\b", "Eleventh"),
+    (r"\bSECLECTED\b", "SELECTED"), (r"\bSeclected\b", "Selected"),
+    (r"\bNineth\b", "Ninth"), (r"\bNINETH\b", "NINTH"),
+    (r"\bMosa\b", "Musa"), (r"\bMOTHS\b", "MONTHS"), (r"\bIT'S AAMAL\b", "ITS AAMAL"),
+    (r"\bAmeerul Momeneen\b", "Amir al-Mu’minin"),
+    (r"\(S\.w\.t\)", "(s.w.t.)"),
+    (r"\s+([,.;:])(?=\s|$)", r"\1"),
+    (r"  +", " "),
+]
+
+
+def fix_en(s: str) -> str:
+    for a, b in EN_FIXES:
+        s = re.sub(a, b, s)
+    return s.strip()
 
 
 def title_case(t: str) -> str:
@@ -256,7 +283,8 @@ def to_paragraphs(lines):
             else:
                 cur = b["x"]
                 if cur.endswith("-") and not cur.endswith(" -"):
-                    b["x"] = cur[:-1] + clean_ws(txt)
+                    # this book hyphenates names (al-Husayn), not syllables: keep the hyphen
+                    b["x"] = cur + clean_ws(txt)
                 else:
                     b["x"] = cur + " " + clean_ws(txt)
         prev = ln
@@ -331,14 +359,21 @@ def main():
             return False
         if len(sr) == 1 and sr != "و":
             return True
-        if len(sl) == 1 and sl != "و":
+        if sl == "ا":  # a bare alef is never a word: ا غْفِرْ
             return True
-        return sl != "و" and vocab[both] >= 1 and vocab[both] >= min(vocab[sl], vocab[sr])
+        if len(sl) == 1:
+            return False
+        return vocab[both] >= 1 and vocab[both] >= min(vocab[sl], vocab[sr])
 
-    def resolve_l(m, t):
-        l = m.group(1)
-        r = re.match(r"[^\s" + LINEBREAK + r"]+", t[m.end():]).group(0)
-        return l + ("\x00" if should_join(l, r) else " ")
+    def resolve(t: str) -> str:
+        # left to right, so a chain a⁢b⁢c is judged on the already-joined left word
+        segs = t.split(LINEBREAK)
+        acc = segs[0]
+        for seg in segs[1:]:
+            lw = acc.rsplit(" ", 1)[-1]
+            rw = seg.split(" ", 1)[0]
+            acc += ("" if lw and rw and should_join(lw, rw) else " ") + seg
+        return acc
 
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "s").mkdir(exist_ok=True)
@@ -347,11 +382,7 @@ def main():
         out = []
         for x in blocks:
             if x["t"] == "ar":
-                w = r"([^\s" + LINEBREAK + r"]+)"
-                t = x["x"]
-                for _ in range(2):  # overlapping wraps: a⁢b⁢c
-                    t = re.sub(w + LINEBREAK + r"(?=" + w[1:-1] + ")", lambda m: resolve_l(m, t), t)
-                t = t.replace(LINEBREAK, " ").replace("\x00", "")
+                t = resolve(x["x"])
                 if VERSE in t:
                     parts = re.split(VERSE + r"(\d+)", t)
                     for i in range(0, len(parts) - 1, 2):
@@ -362,7 +393,7 @@ def main():
                 else:
                     out += [{"t": "ar", "x": c} for c in split_phrases(fix_text(t))]
             else:
-                out.append(x)
+                out.append({**x, "x": fix_en(x["x"])})
         item = dict(
             id=sid,
             level=e["level"],

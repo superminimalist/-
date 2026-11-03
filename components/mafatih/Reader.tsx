@@ -8,14 +8,15 @@ import type { Block } from "@/lib/mafatih/types";
 import {
   IconBack, IconCheck, IconChevron, IconClose, IconPlay, IconStar, IconTextSize,
 } from "./icons";
-import { useBookmarks, useRecents, useSettings, type ArFont, type Theme } from "./store";
+import { romanize } from "@/lib/mafatih/translit";
+import { useBookmarks, useRecents, useSettings, type ArFont, type Settings, type Theme } from "./store";
 import { ToneIcon } from "./ui";
 
 export type ReaderLabels = {
   back: string; settings: string; fontSize: string; font: string; guide: string; awake: string; theme: string;
   themeSystem: string; themeLight: string; themeDark: string; focus: string; close: string; prev: string; next: string;
   save: string; saved: string; finish: string; finishSub: string; tapHint: string; nextLabel: string; prevLabel: string;
-  page: string; minutes: string;
+  page: string; minutes: string; roman: string; trEn: string; trKo: string; show: string;
 };
 
 type Nav = { href: string; title: string } | null;
@@ -246,15 +247,13 @@ export function Reader(p: ReaderProps) {
             const pi = firstPassageOf.get(i) ?? 0;
             return (
               <Fragment key={i}>
-                <p
-                  lang="ar"
-                  dir="rtl"
-                  onDoubleClick={() => setFocus(pi)}
-                  className="mf-ar my-3 border-b border-mf-line/70 pb-4 text-mf-text last:border-0 first:mt-0"
-                >
-                  {b.x}
-                  {"v" in b && b.v ? <span className="mf-verse"> ﴿{toArabicDigits(b.v)}﴾</span> : null}
-                </p>
+                <div className="my-3 border-b border-mf-line/70 pb-5 last:border-0 first:mt-0" onDoubleClick={() => setFocus(pi)}>
+                  <p lang="ar" dir="rtl" className="mf-ar text-mf-text">
+                    {b.x}
+                    {"v" in b && b.v ? <span className="mf-verse"> ﴿{toArabicDigits(b.v)}﴾</span> : null}
+                  </p>
+                  <Companions b={b} s={s} />
+                </div>
               </Fragment>
             );
           })}
@@ -293,6 +292,7 @@ export function Reader(p: ReaderProps) {
             });
           }}
           onSettings={() => setSheet(true)}
+          settings={s}
         />
       )}
     </div>
@@ -314,8 +314,9 @@ function NavCard({ nav, label, dir }: { nav: { href: string; title: string }; la
 
 // ───────────────────────────────────────── focus mode
 function Focus({
-  passages, start, rtlUi, title, labels: L, onClose, onSettings,
+  passages, start, rtlUi, title, labels: L, onClose, onSettings, settings,
 }: {
+  settings: Settings;
   passages: { ar: Extract<Block, { t: "ar" }>; note?: string }[];
   start: number;
   rtlUi: boolean;
@@ -405,6 +406,7 @@ function Focus({
               {cur.ar.x}
               {cur.ar.v ? <span className="mf-verse"> ﴿{toArabicDigits(cur.ar.v)}﴾</span> : null}
             </p>
+            <Companions b={cur.ar} s={settings} center />
             {done && (
               <div className="mt-10 flex flex-col items-center text-center">
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-mf-accent-soft text-mf-accent-ink">
@@ -532,6 +534,12 @@ function SettingsSheet({
         <Segmented value={s.theme} onChange={(v) => set((x) => ({ ...x, theme: v }))} options={themes.map((o) => ({ v: o.v, node: o.label }))} />
 
         <div className="mt-5 overflow-hidden rounded-2xl bg-mf-fill">
+          <Toggle label={L.roman} on={s.roman} onChange={(v) => set((x) => ({ ...x, roman: v }))} />
+          <div className="mx-4 h-px bg-mf-line" />
+          <Toggle label={L.trKo} on={s.trKo} onChange={(v) => set((x) => ({ ...x, trKo: v }))} />
+          <div className="mx-4 h-px bg-mf-line" />
+          <Toggle label={L.trEn} on={s.trEn} onChange={(v) => set((x) => ({ ...x, trEn: v }))} />
+          <div className="mx-4 h-px bg-mf-line" />
           <Toggle label={L.guide} on={s.guide} onChange={(v) => set((x) => ({ ...x, guide: v }))} />
           <div className="mx-4 h-px bg-mf-line" />
           <Toggle label={L.awake} on={s.awake} onChange={(v) => set((x) => ({ ...x, awake: v }))} />
@@ -580,5 +588,30 @@ function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange:
         <span className="absolute start-[2px] top-[2px] h-[27px] w-[27px] rounded-full bg-white shadow-md transition-transform peer-checked:translate-x-[20px] rtl:peer-checked:-translate-x-[20px]" />
       </span>
     </label>
+  );
+}
+
+/** romanisation + translations under an Arabic passage */
+function Companions({ b, s, center }: { b: Extract<Block, { t: "ar" }>; s: Settings; center?: boolean }) {
+  const roman = useMemo(() => (s.roman ? romanize(b.x) : ""), [b.x, s.roman]);
+  if (!roman && !(s.trKo && b.ko) && !(s.trEn && b.en)) return null;
+  return (
+    <div className={`mt-3 space-y-2.5 ${center ? "mx-auto max-w-[36rem] text-center" : ""}`}>
+      {roman && (
+        <p lang="ar-Latn" dir="ltr" className="mf-roman text-mf-accent-ink">
+          {roman}
+        </p>
+      )}
+      {s.trKo && b.ko && (
+        <p lang="ko" className="mf-tr text-mf-text">
+          {b.ko}
+        </p>
+      )}
+      {s.trEn && b.en && (
+        <p lang="en" dir="ltr" className="mf-tr text-mf-sub">
+          {b.en}
+        </p>
+      )}
+    </div>
   );
 }

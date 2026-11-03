@@ -1,5 +1,5 @@
 export type Block =
-  | { t: "ar"; x: string; v?: number } // Arabic text; v = Qur'an verse number
+  | { t: "ar"; x: string; v?: number; en?: string; ko?: string } // Arabic; v = Qur'an verse no.; en/ko = translation
   | { t: "en"; x: string } // English rubric / translation
   | { t: "h"; x: string }; // sub-heading inside a section
 
@@ -24,3 +24,7 @@ export type ItemView = {
   tone: string;
   minutes: number;
 };
+
+/** content/mafatih/translations/*.json: section id → block index → translation.
+ *  c = opening of the Arabic it was written for (checked on merge); ar = corrected Arabic. */
+export type Overlay = Record<string, Record<string, { c: string; ar?: string; en?: string; ko?: string }>>;

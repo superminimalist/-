@@ -20,7 +20,7 @@ type Data = { index: IndexEntry[]; s: Record<string, Block[]> };
 
 const READER_KEYS = [
   "back", "settings", "fontSize", "font", "guide", "awake", "theme", "themeSystem", "themeLight", "themeDark", "focus",
-  "close", "prev", "next", "save", "saved", "finish", "finishSub", "tapHint", "nextLabel", "prevLabel", "page", "minutes",
+  "close", "prev", "next", "save", "saved", "finish", "finishSub", "tapHint", "nextLabel", "prevLabel", "page", "minutes", "roman", "trEn", "trKo", "show",
 ] as const;
 
 function blocksOf(d: Data, s: Slice) {

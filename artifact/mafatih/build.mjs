@@ -14,8 +14,21 @@ mkdirSync(dist, { recursive: true });
 // ── data
 const src = join(root, "content", "mafatih");
 const index = JSON.parse(readFileSync(join(src, "index.json"), "utf8"));
+const overlay = Object.assign({}, ...readdirSync(join(src, "translations")).filter((f) => f.endsWith(".json")).map((f) => JSON.parse(readFileSync(join(src, "translations", f), "utf8"))));
+const skel = (t) => t.replace(/[\u064b-\u0652\u0670\s]/g, "");
 const s = {};
-for (const f of readdirSync(join(src, "s"))) s[f.replace(/\.json$/, "")] = JSON.parse(readFileSync(join(src, "s", f), "utf8")).blocks;
+let merged = 0;
+for (const f of readdirSync(join(src, "s"))) {
+  const id = f.replace(/\.json$/, "");
+  s[id] = JSON.parse(readFileSync(join(src, "s", f), "utf8")).blocks.map((b, i) => {
+    const o = overlay[id]?.[String(i)];
+    if (!o || b.t !== "ar" || !skel(b.x).startsWith(skel(o.c))) return b;
+    merged++;
+    return { ...b, x: o.ar ?? b.x, en: o.en, ko: o.ko };
+  });
+}
+const expected = Object.values(overlay).reduce((n, o) => n + Object.keys(o).length, 0);
+if (merged !== expected) throw new Error(`translations merged ${merged}/${expected}: block indices moved`);
 writeFileSync(join(dist, "content.json"), JSON.stringify({ index, s }));
 
 // ── js

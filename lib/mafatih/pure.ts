@@ -1,5 +1,5 @@
 // Runtime-agnostic helpers over the extracted book (used by the server pages and the artifact build).
-import type { Block, IndexEntry } from "./types";
+import type { Block, IndexEntry, Overlay } from "./types";
 
 const norm = (s: string) => s.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
@@ -68,4 +68,18 @@ export function breadcrumbsIn(index: IndexEntry[], id: string) {
     }
   }
   return out;
+}
+
+const skel = (s: string) => s.replace(/[\u064b-\u0652\u0670\s]/g, "");
+
+/** merge translations / corrected Arabic into a section's blocks; entries whose Arabic no longer
+ *  matches (the text was re-extracted and blocks moved) are skipped rather than misplaced */
+export function applyOverlay(id: string, blocks: Block[], overlay: Overlay): Block[] {
+  const tr = overlay[id];
+  if (!tr) return blocks;
+  return blocks.map((b, i) => {
+    const o = tr[String(i)];
+    if (!o || b.t !== "ar" || !skel(b.x).startsWith(skel(o.c))) return b;
+    return { ...b, x: o.ar ?? b.x, en: o.en, ko: o.ko };
+  });
 }

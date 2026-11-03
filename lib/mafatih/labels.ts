@@ -4,7 +4,7 @@ import type { ReaderLabels } from "@/components/mafatih/Reader";
 
 const KEYS = [
   "back", "settings", "fontSize", "font", "guide", "awake", "theme", "themeSystem", "themeLight", "themeDark", "focus",
-  "close", "prev", "next", "save", "saved", "finish", "finishSub", "tapHint", "nextLabel", "prevLabel", "page", "minutes",
+  "close", "prev", "next", "save", "saved", "finish", "finishSub", "tapHint", "nextLabel", "prevLabel", "page", "minutes", "roman", "trEn", "trKo", "show",
 ] as const satisfies readonly (keyof ReaderLabels)[];
 
 export async function readerLabels(): Promise<ReaderLabels> {

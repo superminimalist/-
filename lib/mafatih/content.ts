@@ -1,9 +1,9 @@
 import "server-only";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { cache } from "react";
-import { breadcrumbsIn, buildTree, neighboursIn, sliceBlocks, type TocNode } from "./pure";
-import type { IndexEntry, Section, Slice } from "./types";
+import { applyOverlay, breadcrumbsIn, buildTree, neighboursIn, sliceBlocks, type TocNode } from "./pure";
+import type { IndexEntry, Overlay, Section, Slice } from "./types";
 
 export { sliceBlocks, type TocNode };
 
@@ -15,10 +15,23 @@ export const getIndex = cache(async (): Promise<IndexEntry[]> => {
   return JSON.parse(await readFile(path.join(ROOT, "index.json"), "utf8"));
 });
 
+// translations are small and change rarely: read once per server process
+let overlayP: Promise<Overlay> | null = null;
+function getOverlay(): Promise<Overlay> {
+  overlayP ??= (async () => {
+    const dir = path.join(ROOT, "translations");
+    const files = (await readdir(dir).catch(() => [] as string[])).filter((f) => f.endsWith(".json"));
+    const parts = await Promise.all(files.map(async (f) => JSON.parse(await readFile(path.join(dir, f), "utf8")) as Overlay));
+    return Object.assign({}, ...parts);
+  })();
+  return overlayP;
+}
+
 export const getSection = cache(async (id: string): Promise<Section | null> => {
   if (!ID_RE.test(id)) return null;
   try {
-    return JSON.parse(await readFile(path.join(ROOT, "s", `${id}.json`), "utf8"));
+    const sec: Section = JSON.parse(await readFile(path.join(ROOT, "s", `${id}.json`), "utf8"));
+    return { ...sec, blocks: applyOverlay(id, sec.blocks, await getOverlay()) };
   } catch {
     return null;
   }
