@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>카마르 다르 아크랍</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+body { margin: 0; }
+[hidden] { display: none !important; }
+/* Layout: a night-sky almanac — one status card with a zodiac dial, then a ledger of periods. */
+:root {
+  --bg: #eef0f5;
+  --surface: #ffffff;
+  --ink: #1b2033;
+  --muted: #5d6479;
+  --line: #d6dae6;
+  --accent: #b5452c;
+  --accent-soft: #f6e3dc;
+  --moon: #c9a24a;
+  --ok: #2f6b4f;
+  --font-display: "Gowun Batang", "Noto Serif KR", serif;
+  --font-arabic: "Amiri", "Noto Naskh Arabic", serif;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1220; --surface: #171b2e; --ink: #e7e9f2; --muted: #9aa1b9;
+    --line: #2a3050; --accent: #e07a5f; --accent-soft: #3a2228; --moon: #e8c874; --ok: #7cc4a0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1220; --surface: #171b2e; --ink: #e7e9f2; --muted: #9aa1b9;
+  --line: #2a3050; --accent: #e07a5f; --accent-soft: #3a2228; --moon: #e8c874; --ok: #7cc4a0;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+}
+.wrap {
+  max-width: 880px; margin: 0 auto;
+  padding-block: 32px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 28px;
+}
+header { display: grid; gap: 4px; }
+.ar { font-family: var(--font-arabic); font-size: 2rem; line-height: 1.3; color: var(--accent); direction: rtl; text-align: start; }
+header .ar { text-align: left; }
+h1 { font-family: var(--font-display); font-size: clamp(1.7rem, 4vw, 2.3rem); margin: 0; text-wrap: balance; line-height: 1.25; }
+.sub { color: var(--muted); margin: 0; max-width: 62ch; }
+
+.status {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 24px; display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: center;
+}
+.status > div { min-width: 0; }
+@media (max-width: 620px) { .status { grid-template-columns: 1fr; justify-items: center; text-align: center; } }
+#dial { width: 220px; max-width: 100%; height: auto; display: block; }
+.pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em;
+  padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted);
+}
+.pill.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.pill .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.pill.on .dot { animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.3; } }
+@media (prefers-reduced-motion: reduce) { .pill.on .dot { animation: none; } }
+.headline { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; margin: 12px 0 4px; line-height: 1.35; text-wrap: balance; }
+.countdown { font-family: var(--font-mono); font-size: 1.9rem; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.range { color: var(--muted); margin-top: 6px; }
+.meta { margin-top: 14px; font-size: 0.85rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 16px; }
+@media (max-width: 620px) { .meta { justify-content: center; } }
+.meta b { color: var(--ink); font-weight: 500; font-family: var(--font-mono); }
+
+.controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.seg button {
+  font: inherit; font-size: 0.88rem; border: 0; background: transparent; color: var(--muted);
+  padding: 8px 14px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+label.yr { display: inline-flex; gap: 8px; align-items: center; font-size: 0.88rem; color: var(--muted); }
+select { font: inherit; font-size: 0.88rem; padding: 7px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+
+h2 { font-family: var(--font-display); font-size: 1.25rem; margin: 0 0 4px; }
+.tz { color: var(--muted); font-size: 0.85rem; margin: 0 0 12px; }
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 560px; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: 0.74rem; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td.t { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+td .wd { color: var(--muted); font-family: var(--font-body); margin-left: 4px; }
+td.h { color: var(--muted); font-size: 0.82rem; }
+tr.now td { background: var(--accent-soft); }
+tr.now td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+tr.past td { color: var(--muted); }
+.tag { font-size: 0.72rem; font-weight: 600; color: var(--accent); margin-left: 6px; }
+
+.notes { font-size: 0.85rem; color: var(--muted); display: grid; gap: 6px; max-width: 70ch; }
+.notes p { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="ar" lang="ar">القمر في العقرب</div>
+    <h1>카마르 다르 아크랍 · 한국 / 일본</h1>
+    <p class="sub">달이 전갈자리(برج العقرب, 황경 210°~240°)를 지나는 시간입니다. 시아파 전통에서는 이 시간에 혼인·여행 같은 중요한 일을 시작하지 않도록 권합니다.</p>
+  </header>
+
+  <section class="status" aria-live="polite">
+    <svg id="dial" viewBox="0 0 220 220" role="img" aria-label="현재 달의 황도 위치"></svg>
+    <div>
+      <span class="pill" id="pill"><span class="dot"></span><span id="pillText">계산 중</span></span>
+      <div class="headline" id="headline">달의 위치를 계산하고 있습니다</div>
+      <div class="countdown" id="countdown">--</div>
+      <div class="range" id="range"></div>
+      <div class="meta">
+        <span>지금 (KST/JST) <b id="nowTime">--</b></span>
+        <span>달 황경 <b id="lon">--</b></span>
+        <span>현재 별자리 <b id="sign">--</b></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="황도 기준">
+      <button type="button" id="btnTropical" aria-pressed="true">회귀황도 (이란·이라크 달력)</button>
+      <button type="button" id="btnSidereal" aria-pressed="false">항성황도 (라히리)</button>
+    </div>
+    <label class="yr" for="yearSel">기간
+      <select id="yearSel"></select>
+    </label>
+  </div>
+
+  <section>
+    <h2 id="listTitle">다가오는 카마르 다르 아크랍</h2>
+    <p class="tz">한국 표준시(KST)와 일본 표준시(JST)는 모두 UTC+9이며 서머타임이 없어 두 나라 시각이 같습니다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>시작</th><th>끝</th><th>지속</th><th>히즈리력 (시작일)</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="notes">
+    <p>계산: Jean Meeus 『Astronomical Algorithms』 47장의 달 위치 공식(주요 60항)과 장동 보정으로 겉보기 황경을 구합니다. 오차는 대체로 1분 이내입니다. 인터넷 없이도 이 페이지 안에서 바로 계산됩니다.</p>
+    <p>기본값인 회귀황도는 이란 태양력과 시아파 역서(타끄빔)에서 쓰는 기준입니다. 항성황도는 별자리 경계를 약 24° 옮긴 값으로, 일부 남아시아 역서가 따릅니다. 따르는 마르자의 역서와 1~2시간 차이가 날 수 있으니 중요한 일정은 해당 역서도 확인하세요.</p>
+    <p>히즈리 날짜는 움무 알꾸라 계산 기준이라 지역의 초승달 관측에 따라 하루 차이가 날 수 있습니다.</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const D2R = Math.PI / 180;
+  const norm = x => ((x % 360) + 360) % 360;
+  const TZ = "Asia/Seoul";
+  const SCORPIO_START = 210, SCORPIO_END = 240;
+
+  // Meeus Table 47.A: D, M, M', F, Σl coefficient (1e-6 degrees)
+  const T47A = [
+    [0,0,1,0,6288774],[2,0,-1,0,1274027],[2,0,0,0,658314],[0,0,2,0,213618],[0,1,0,0,-185116],
+    [0,0,0,2,-114332],[2,0,-2,0,58793],[2,-1,-1,0,57066],[2,0,1,0,53322],[2,-1,0,0,45758],
+    [0,1,-1,0,-40923],[1,0,0,0,-34720],[0,1,1,0,-30383],[2,0,0,-2,15327],[0,0,1,2,-12528],
+    [0,0,1,-2,10980],[4,0,-1,0,10675],[0,0,3,0,10034],[4,0,-2,0,8548],[2,1,-1,0,-7888],
+    [2,1,0,0,-6766],[1,0,-1,0,-5163],[1,1,0,0,4987],[2,-1,1,0,4036],[2,0,2,0,3994],
+    [4,0,0,0,3861],[2,0,-3,0,3665],[0,1,-2,0,-2689],[2,0,-1,2,-2602],[2,-1,-2,0,2390],
+    [1,0,1,0,-2348],[2,-2,0,0,2236],[0,1,2,0,-2120],[0,2,0,0,-2069],[2,-2,-1,0,2048],
+    [2,0,1,-2,-1773],[2,0,0,2,-1595],[4,-1,-1,0,1215],[0,0,2,2,-1110],[3,0,-1,0,-892],
+    [2,1,1,0,-810],[4,-1,-2,0,759],[0,2,-1,0,-713],[2,2,-1,0,-700],[2,1,-2,0,691],
+    [2,-1,0,-2,596],[4,0,1,0,549],[0,0,4,0,537],[4,-1,0,0,520],[1,0,-2,0,-487],
+    [2,1,0,-2,-399],[0,0,2,-2,-381],[1,1,1,0,351],[3,0,-2,0,-340],[4,0,-3,0,330],
+    [2,-1,2,0,327],[0,2,1,0,-323],[1,1,-1,0,299],[2,0,3,0,294]
+  ];
+
+  const DELTA_T = 69; // seconds, TT − UT around 2025–2030
+
+  function moonApparentLon(ms) {
+    const jde = ms / 86400000 + 2440587.5 + DELTA_T / 86400;
+    const T = (jde - 2451545) / 36525, T2 = T*T, T3 = T2*T, T4 = T3*T;
+    const Lp = 218.3164477 + 481267.88123421*T - 0.0015786*T2 + T3/538841 - T4/65194000;
+    const D  = 297.8501921 + 445267.1114034*T - 0.0018819*T2 + T3/545868 - T4/113065000;
+    const M  = 357.5291092 + 35999.0502909*T - 0.0001536*T2 + T3/24490000;
+    const Mp = 134.9633964 + 477198.8675055*T + 0.0087414*T2 + T3/69699 - T4/14712000;
+    const F  = 93.2720950 + 483202.0175233*T - 0.0036539*T2 - T3/3526000 + T4/863310000;
+    const A1 = 119.75 + 131.849*T, A2 = 53.09 + 479264.290*T;
+    const E = 1 - 0.002516*T - 0.0000074*T2;
+    let sl = 0;
+    for (const [d, m, mp, f, c] of T47A) {
+      const arg = (d*D + m*M + mp*Mp + f*F) * D2R;
+      const e = m === 0 ? 1 : (Math.abs(m) === 1 ? E : E*E);
+      sl += c * e * Math.sin(arg);
+    }
+    sl += 3958*Math.sin(A1*D2R) + 1962*Math.sin((Lp - F)*D2R) + 318*Math.sin(A2*D2R);
+    const om = (125.04452 - 1934.136261*T) * D2R;
+    const Ls = (280.4665 + 36000.7698*T) * D2R, Lm = Lp * D2R;
+    const dpsi = (-17.20*Math.sin(om) - 1.32*Math.sin(2*Ls) - 0.23*Math.sin(2*Lm) + 0.21*Math.sin(2*om)) / 3600;
+    return { lon: norm(Lp + sl/1e6 + dpsi), T };
+  }
+
+  let sidereal = false;
+  try { sidereal = localStorage.getItem("qda-sidereal") === "1"; } catch (e) {}
+
+  function lonAt(ms) {
+    const { lon, T } = moonApparentLon(ms);
+    return sidereal ? norm(lon - (23.853 + 1.397*T)) : lon;
+  }
+  const inScorpio = ms => { const l = lonAt(ms); return l >= SCORPIO_START && l < SCORPIO_END; };
+
+  function refine(a, b) {
+    const fa = inScorpio(a);
+    while (b - a > 1000) {
+      const mid = (a + b) / 2;
+      if (inScorpio(mid) === fa) a = mid; else b = mid;
+    }
+    return Math.round((a + b) / 2 / 1000) * 1000;
+  }
+
+  function findPeriods(fromMs, toMs) {
+    const H = 3600000, out = [];
+    let t = fromMs - 4*86400000, prev = inScorpio(t), start = null;
+    for (t += H; t <= toMs + 4*86400000; t += H) {
+      const cur = inScorpio(t);
+      if (cur !== prev) {
+        const edge = refine(t - H, t);
+        if (cur) start = edge;
+        else if (start !== null) { out.push({ start, end: edge }); start = null; }
+        prev = cur;
+      }
+    }
+    return out.filter(p => p.end > fromMs && p.start < toMs);
+  }
+
+  const fmtDate = new Intl.DateTimeFormat("ko-KR", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" });
+  const fmtTime = new Intl.DateTimeFormat("ko-KR", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  const fmtWd = new Intl.DateTimeFormat("ko-KR", { timeZone: TZ, weekday: "short" });
+  const fmtFull = new Intl.DateTimeFormat("ko-KR", { timeZone: TZ, month: "long", day: "numeric", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  let fmtHijri;
+  try { fmtHijri = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", { timeZone: TZ, day: "numeric", month: "long", year: "numeric" }); } catch (e) { fmtHijri = null; }
+
+  const dateStr = ms => fmtDate.format(ms).replace(/\.\s?/g, ".").replace(/\.$/, "");
+  const cell = ms => `${dateStr(ms)} ${fmtTime.format(ms)}<span class="wd">(${fmtWd.format(ms)})</span>`;
+  function dur(ms) {
+    const m = Math.round(ms / 60000), d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), mm = m % 60;
+    return (d ? d + "일 " : "") + h + "시간 " + mm + "분";
+  }
+  function countdown(ms) {
+    const s = Math.max(0, Math.floor(ms / 1000));
+    const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+    const p = n => String(n).padStart(2, "0");
+    return (d ? d + "일 " : "") + p(h) + ":" + p(m) + ":" + p(sec);
+  }
+
+  const SIGNS = [
+    ["♈","양자리","الحمل"],["♉","황소자리","الثور"],["♊","쌍둥이자리","الجوزاء"],["♋","게자리","السرطان"],
+    ["♌","사자자리","الأسد"],["♍","처녀자리","السنبلة"],["♎","천칭자리","الميزان"],["♏","전갈자리","العقرب"],
+    ["♐","궁수자리","القوس"],["♑","염소자리","الجدي"],["♒","물병자리","الدلو"],["♓","물고기자리","الحوت"]
+  ];
+
+  const dial = document.getElementById("dial");
+  const NS = "http://www.w3.org/2000/svg";
+  const C = 110, R1 = 104, R0 = 70;
+  // Aries at the left, signs running counter-clockwise like an astrolabe plate.
+  const pt = (deg, r) => [C - r*Math.cos(deg*D2R), C + r*Math.sin(deg*D2R)];
+  function el(tag, attrs, parent) {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    (parent || dial).appendChild(n); return n;
+  }
+  function buildDial() {
+    for (let i = 0; i < 12; i++) {
+      const a = i*30, b = a + 30;
+      const [x1,y1] = pt(a,R1), [x2,y2] = pt(b,R1), [x3,y3] = pt(b,R0), [x4,y4] = pt(a,R0);
+      el("path", {
+        d: `M${x1},${y1} A${R1},${R1} 0 0 0 ${x2},${y2} L${x3},${y3} A${R0},${R0} 0 0 1 ${x4},${y4} Z`,
+        fill: i === 7 ? "var(--accent-soft)" : "var(--surface)",
+        stroke: i === 7 ? "var(--accent)" : "var(--line)", "stroke-width": i === 7 ? 1.5 : 1
+      });
+      const [tx,ty] = pt(a + 15, (R0 + R1)/2);
+      const t = el("text", { x: tx, y: ty, "text-anchor": "middle", "dominant-baseline": "central",
+        "font-size": 15, fill: i === 7 ? "var(--accent)" : "var(--muted)" });
+      t.textContent = SIGNS[i][0] + "︎";
+    }
+    el("circle", { cx: C, cy: C, r: R0 - 2, fill: "none", stroke: "var(--line)", "stroke-dasharray": "2 4" });
+    el("line", { id: "hand", x1: C, y1: C, x2: C, y2: C, stroke: "var(--moon)", "stroke-width": 1.5, "stroke-linecap": "round" });
+    el("circle", { id: "moon", cx: C, cy: C, r: 8, fill: "var(--moon)", stroke: "var(--surface)", "stroke-width": 2 });
+    el("circle", { cx: C, cy: C, r: 3, fill: "var(--muted)" });
+  }
+  function placeMoon(lon) {
+    const [x,y] = pt(lon, R0 - 14);
+    const m = document.getElementById("moon"), h = document.getElementById("hand");
+    m.setAttribute("cx", x); m.setAttribute("cy", y);
+    h.setAttribute("x2", x); h.setAttribute("y2", y);
+  }
+
+  const $ = id => document.getElementById(id);
+  const yearSel = $("yearSel");
+  let upcoming = [];
+
+  function fillYears() {
+    const y = Number(dateStr(Date.now()).slice(0, 4));
+    const opts = [["next", "앞으로 12개월"]];
+    for (let k = y - 1; k <= y + 4; k++) opts.push([String(k), k + "년"]);
+    yearSel.innerHTML = opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join("");
+  }
+
+  function kstYearBounds(y) {
+    return [Date.UTC(y, 0, 1) - 9*3600000, Date.UTC(y + 1, 0, 1) - 9*3600000];
+  }
+
+  function renderTable() {
+    const now = Date.now(), v = yearSel.value;
+    let list;
+    if (v === "next") {
+      list = findPeriods(now, now + 366*86400000);
+      $("listTitle").textContent = "다가오는 카마르 다르 아크랍";
+    } else {
+      const [a, b] = kstYearBounds(Number(v));
+      list = findPeriods(a, b);
+      $("listTitle").textContent = v + "년 카마르 다르 아크랍";
+    }
+    $("rows").innerHTML = list.map(p => {
+      const cls = p.start <= now && now < p.end ? "now" : (p.end <= now ? "past" : "");
+      const tag = cls === "now" ? '<span class="tag">진행 중</span>' : "";
+      const hij = fmtHijri ? fmtHijri.format(p.start) : "";
+      return `<tr class="${cls}"><td class="t">${cell(p.start)}${tag}</td><td class="t">${cell(p.end)}</td><td>${dur(p.end - p.start)}</td><td class="h">${hij}</td></tr>`;
+    }).join("");
+  }
+
+  function refreshUpcoming() {
+    const now = Date.now();
+    upcoming = findPeriods(now, now + 40*86400000);
+  }
+
+  function tick() {
+    const now = Date.now();
+    if (!upcoming.length || upcoming[0].end <= now) { refreshUpcoming(); renderTable(); }
+    const lon = lonAt(now);
+    placeMoon(lon);
+    const s = SIGNS[Math.floor(lon / 30)];
+    $("lon").textContent = lon.toFixed(2) + "°";
+    $("sign").textContent = s[1];
+    $("nowTime").textContent = fmtFull.format(now);
+
+    const p = upcoming[0];
+    const active = p.start <= now && now < p.end;
+    $("pill").classList.toggle("on", active);
+    $("pillText").textContent = active ? "지금 카마르 다르 아크랍" : "지금은 해당 없음";
+    if (active) {
+      $("headline").textContent = "지금 달이 전갈자리에 있습니다";
+      $("countdown").textContent = countdown(p.end - now);
+      $("range").textContent = `${fmtFull.format(p.end)}에 끝납니다 (남은 시간)`;
+    } else {
+      $("headline").textContent = "다음 카마르 다르 아크랍까지";
+      $("countdown").textContent = countdown(p.start - now);
+      $("range").textContent = `${fmtFull.format(p.start)} ~ ${fmtFull.format(p.end)}`;
+    }
+  }
+
+  function setMode(sid) {
+    sidereal = sid;
+    try { localStorage.setItem("qda-sidereal", sid ? "1" : "0"); } catch (e) {}
+    $("btnTropical").setAttribute("aria-pressed", String(!sid));
+    $("btnSidereal").setAttribute("aria-pressed", String(sid));
+    refreshUpcoming(); renderTable(); tick();
+  }
+
+  $("btnTropical").addEventListener("click", () => setMode(false));
+  $("btnSidereal").addEventListener("click", () => setMode(true));
+  yearSel.addEventListener("change", renderTable);
+
+  buildDial();
+  fillYears();
+  setMode(sidereal);
+  setInterval(tick, 1000);
+
+  window.__qda = { moonApparentLon, findPeriods };
+})();
+</script>
+</body>
+</html>
