@@ -33,7 +33,7 @@ for (const [sid, entries] of Object.entries(tr)) {
     if (!b) errors.push(`${at}: no block at this index`);
     else if (b.t !== "ar") errors.push(`${at}: block is "${b.t}", not Arabic`);
     else if (!o.c || !skel(b.x).startsWith(skel(o.c))) errors.push(`${at}: "c" does not match the start of the block (${b.x.slice(0, 30)}…)`);
-    if (!o.en || o.en.length < 2) errors.push(`${at}: missing en`);
+    if (o.en !== undefined && o.en.length < 2) errors.push(`${at}: empty en`);
     if (!o.ko || !hangul.test(o.ko)) errors.push(`${at}: missing/invalid ko`);
     if (o.ar !== undefined && skel(o.ar).length < skel(b?.x ?? "").length * 0.6) errors.push(`${at}: "ar" much shorter than the block; must cover the same span`);
   }

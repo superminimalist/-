@@ -1,6 +1,6 @@
 [
  {
-  "chunk": 1,
+  "chunk": 101,
   "sections": [
    {
     "id": "surah-yasin",
@@ -756,135 +756,6 @@
      11,
      12
     ]
-   }
-  ],
-  "words": 6326
- },
- {
-  "chunk": 2,
-  "sections": [
-   {
-    "id": "taqibaat-e-namaz-e-maghrib",
-    "idx": [
-     1,
-     3,
-     5,
-     7,
-     11,
-     14,
-     16,
-     19,
-     21,
-     23,
-     26
-    ]
-   },
-   {
-    "id": "taqibaat-e-namaz-e-isha",
-    "idx": [
-     1,
-     2
-    ]
-   },
-   {
-    "id": "taqibaat-e-namaz-e-fajr",
-    "idx": [
-     1,
-     5,
-     7,
-     9,
-     10,
-     13,
-     15,
-     17,
-     19,
-     20,
-     21
-    ]
-   },
-   {
-    "id": "true-incident-for-fulfillment-of-desires",
-    "idx": [
-     4,
-     6
-    ]
-   },
-   {
-    "id": "supplications-at-sunrise-sunset",
-    "idx": [
-     2,
-     5,
-     7,
-     9,
-     11
-    ]
-   },
-   {
-    "id": "thanksgiving-prostration-sajdat-al-shukr",
-    "idx": [
-     1,
-     3
-    ]
-   },
-   {
-    "id": "recommended-rituals-of-friday-night-shab-e-jumah",
-    "idx": [
-     2,
-     8,
-     11,
-     28,
-     30,
-     32,
-     33,
-     34,
-     35,
-     36,
-     37,
-     38,
-     39,
-     40,
-     41,
-     44,
-     46,
-     49,
-     51,
-     52,
-     53,
-     54,
-     55,
-     56,
-     58,
-     59,
-     61
-    ]
-   },
-   {
-    "id": "recommended-rites-of-friday",
-    "idx": [
-     3,
-     7,
-     9,
-     18,
-     22,
-     32
-    ]
-   },
-   {
-    "id": "namaz-e-kamilah",
-    "idx": [
-     3,
-     9
-    ]
-   },
-   {
-    "id": "namaz-of-holy-prophet-s",
-    "idx": [
-     1,
-     2,
-     3,
-     4,
-     5
-    ]
    },
    {
     "id": "namaz-of-imam-ali-a-s",
@@ -908,7 +779,13 @@
      27,
      28
     ]
-   },
+   }
+  ],
+  "words": 6997
+ },
+ {
+  "chunk": 102,
+  "sections": [
    {
     "id": "namaz-of-the-rest-of-the-imams-a-s",
     "idx": [
@@ -1025,13 +902,7 @@
      18,
      20
     ]
-   }
-  ],
-  "words": 5701
- },
- {
-  "chunk": 3,
-  "sections": [
+   },
    {
     "id": "dua-asharat",
     "idx": [
@@ -1129,7 +1000,13 @@
      10,
      11
     ]
-   },
+   }
+  ],
+  "words": 6785
+ },
+ {
+  "chunk": 103,
+  "sections": [
    {
     "id": "dua-mujeer",
     "idx": [
@@ -1241,13 +1118,7 @@
      15,
      17
     ]
-   }
-  ],
-  "words": 5673
- },
- {
-  "chunk": 4,
-  "sections": [
+   },
    {
     "id": "dua-jawshan-al-kabir",
     "idx": [
@@ -1356,7 +1227,13 @@
      210,
      212
     ]
-   },
+   }
+  ],
+  "words": 6122
+ },
+ {
+  "chunk": 104,
+  "sections": [
    {
     "id": "dua-jawshan-al-sagir",
     "idx": [
@@ -1430,100 +1307,6 @@
      9,
      12,
      15
-    ]
-   }
-  ],
-  "words": 6450
- },
- {
-  "chunk": 5,
-  "sections": [
-   {
-    "id": "dua-tawassul",
-    "idx": [
-     1,
-     2,
-     3,
-     5
-    ]
-   },
-   {
-    "id": "another-dua-tawassul",
-    "idx": [
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11
-    ]
-   },
-   {
-    "id": "dua-faraj-release-from-grief",
-    "idx": [
-     1,
-     2,
-     5
-    ]
-   },
-   {
-    "id": "supplication-for-release-from-prison",
-    "idx": [
-     1
-    ]
-   },
-   {
-    "id": "dua-al-noor",
-    "idx": [
-     2,
-     3,
-     4
-    ]
-   },
-   {
-    "id": "hirz-zayn-al-abidin-a",
-    "idx": [
-     1,
-     2,
-     3
-    ]
-   },
-   {
-    "id": "dua-muqatil-ibn-sulayman",
-    "idx": [
-     1,
-     2,
-     3,
-     4,
-     5
-    ]
-   },
-   {
-    "id": "dua-taught-by-jibrael-to-the-holy-prophet-s",
-    "idx": [
-     2
-    ]
-   },
-   {
-    "id": "dua-for-immediate-fulfillment",
-    "idx": [
-     1,
-     2,
-     3
-    ]
-   },
-   {
-    "id": "dua-amaan-the-supplication-for-security",
-    "idx": [
-     2,
-     3,
-     4,
-     5,
-     6
     ]
    },
    {
@@ -1722,143 +1505,6 @@
      3,
      9
     ]
-   }
-  ],
-  "words": 5856
- },
- {
-  "chunk": 6,
-  "sections": [
-   {
-    "id": "daily-supplications-of-rajab",
-    "idx": [
-     1,
-     3,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     16,
-     17,
-     18,
-     19,
-     20,
-     21,
-     23,
-     24,
-     25,
-     27,
-     29,
-     30,
-     31,
-     32,
-     33
-    ]
-   },
-   {
-    "id": "miscellaneous-aamal-for-the-month-of-rajab",
-    "idx": [
-     1,
-     2,
-     3,
-     5,
-     7,
-     9,
-     11,
-     13,
-     15,
-     19,
-     22,
-     25,
-     27,
-     29,
-     31,
-     33
-    ]
-   },
-   {
-    "id": "a-first-night-of-friday-laylat-al-raghaib",
-    "idx": [
-     3,
-     5,
-     7,
-     9,
-     12
-    ]
-   },
-   {
-    "id": "b-first-night-of-rajab",
-    "idx": [
-     2,
-     4,
-     9,
-     14,
-     17,
-     18,
-     19,
-     20,
-     22,
-     23
-    ]
-   },
-   {
-    "id": "d-fifteenth-of-rajab-namaz-e-salman",
-    "idx": [
-     1,
-     3,
-     6,
-     8
-    ]
-   },
-   {
-    "id": "f-fifteenth-of-rajab",
-    "idx": [
-     5,
-     9,
-     11,
-     18,
-     19,
-     20
-    ]
-   },
-   {
-    "id": "g-aamal-dua-of-umme-dawood",
-    "idx": [
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     19,
-     20,
-     21,
-     22,
-     23,
-     24,
-     26
-    ]
-   },
-   {
-    "id": "h-aamal-of-laylat-al-mab-as-27th-night",
-    "idx": [
-     4
-    ]
    },
    {
     "id": "i-remaining-aamal-of-laylat-al-mab-as",
@@ -1875,7 +1521,13 @@
      12,
      14
     ]
-   },
+   }
+  ],
+  "words": 6513
+ },
+ {
+  "chunk": 105,
+  "sections": [
    {
     "id": "j-aamal-of-the-day-of-mab-as-27th-day",
     "idx": [
@@ -1978,96 +1630,6 @@
     "idx": [
      4
     ]
-   }
-  ],
-  "words": 5882
- },
- {
-  "chunk": 7,
-  "sections": [
-   {
-    "id": "fifteenth-night-of-shaban",
-    "idx": [
-     8,
-     11,
-     12,
-     13,
-     14,
-     16,
-     17,
-     19,
-     22,
-     25,
-     28,
-     29,
-     30,
-     31,
-     32,
-     33,
-     34,
-     36,
-     38,
-     40,
-     42,
-     44,
-     48,
-     49,
-     52,
-     54,
-     56,
-     61
-    ]
-   },
-   {
-    "id": "general-aamal-for-the-days-nights-of-ramadhan",
-    "idx": [
-     1,
-     2,
-     4,
-     6
-    ]
-   },
-   {
-    "id": "dua-al-hajj",
-    "idx": [
-     1,
-     2,
-     3
-    ]
-   },
-   {
-    "id": "the-rites-of-ramadan-nights-dua-al-iftitah",
-    "idx": [
-     4,
-     7,
-     10,
-     12,
-     21,
-     25,
-     26,
-     27,
-     28,
-     29,
-     30,
-     31,
-     32,
-     33,
-     34,
-     35,
-     36,
-     37,
-     38,
-     39,
-     40,
-     41,
-     42,
-     43,
-     44,
-     45,
-     47,
-     48,
-     49
-    ]
    },
    {
     "id": "aamal-duas-to-be-recited-in-every-night-of-ramadhan",
@@ -2095,55 +1657,10 @@
      5,
      6
     ]
-   }
-  ],
-  "words": 3466
- },
- {
-  "chunk": 8,
-  "sections": [
+   },
    {
     "id": "dua-abu-hamzah-al-thumali",
     "idx": [
-     1,
-     2,
-     3,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     19,
-     20,
-     21,
-     22,
-     23,
-     24,
-     25,
-     26,
-     27,
-     28,
-     29,
-     30,
-     31,
-     32,
-     33,
-     34,
-     35,
-     36,
-     37,
-     38,
-     39,
-     40,
      41,
      42,
      43,
@@ -2222,7 +1739,13 @@
      2,
      3
     ]
-   },
+   }
+  ],
+  "words": 5741
+ },
+ {
+  "chunk": 106,
+  "sections": [
    {
     "id": "aamal-duas-for-the-days-of-ramadhan",
     "idx": [
@@ -2250,110 +1773,6 @@
      24,
      26,
      27
-    ]
-   }
-  ],
-  "words": 6415
- },
- {
-  "chunk": 9,
-  "sections": [
-   {
-    "id": "tasbeehat-salawat-for-every-day-in-ramadhan",
-    "idx": [
-     2,
-     3,
-     5,
-     6,
-     7,
-     9,
-     10,
-     12,
-     13,
-     15,
-     16,
-     18,
-     20,
-     21,
-     23,
-     24,
-     25,
-     27,
-     28,
-     30,
-     31,
-     33,
-     34,
-     35,
-     36,
-     37,
-     38,
-     39,
-     40,
-     41,
-     42,
-     43,
-     44,
-     46,
-     48,
-     49,
-     50,
-     52,
-     53,
-     54,
-     55,
-     56,
-     57,
-     58,
-     59,
-     60,
-     62,
-     64,
-     66,
-     69,
-     71,
-     73
-    ]
-   },
-   {
-    "id": "first-night-of-ramadhan",
-    "idx": [
-     3,
-     5,
-     7
-    ]
-   },
-   {
-    "id": "dua-no-43-of-sahifa-al-kamilah",
-    "idx": [
-     1,
-     2,
-     3,
-     4
-    ]
-   },
-   {
-    "id": "other-aamal-of-the-first-night",
-    "idx": [
-     5,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     17,
-     18,
-     21,
-     23,
-     26,
-     27,
-     31,
-     32,
-     33,
-     35
     ]
    },
    {
@@ -2470,186 +1889,6 @@
      0,
      1
     ]
-   }
-  ],
-  "words": 6423
- },
- {
-  "chunk": 10,
-  "sections": [
-   {
-    "id": "27th-night-of-ramadan",
-    "idx": [
-     1,
-     3,
-     4
-    ]
-   },
-   {
-    "id": "dua-for-the-28th-night-of-ramadhan",
-    "idx": [
-     0,
-     1
-    ]
-   },
-   {
-    "id": "dua-for-the-29th-night-of-ramadhan",
-    "idx": [
-     0,
-     1
-    ]
-   },
-   {
-    "id": "last-night-of-ramadhan",
-    "idx": [
-     4,
-     6,
-     8,
-     10,
-     12,
-     15,
-     18,
-     20
-    ]
-   },
-   {
-    "id": "dua-for-the-30th-night-of-ramadhan",
-    "idx": [
-     0,
-     1,
-     2
-    ]
-   },
-   {
-    "id": "the-30th-of-ramadhan",
-    "idx": [
-     1,
-     3,
-     5
-    ]
-   },
-   {
-    "id": "short-duas-for-the-days-of-ramadhan",
-    "idx": [
-     1,
-     3,
-     5,
-     7,
-     9,
-     11,
-     13,
-     15,
-     17,
-     19,
-     21,
-     23,
-     25,
-     27,
-     29,
-     31,
-     33,
-     35,
-     37,
-     39,
-     41,
-     43,
-     45,
-     47,
-     49,
-     51,
-     53,
-     55,
-     57,
-     59
-    ]
-   },
-   {
-    "id": "1st-night-of-shawwal",
-    "idx": [
-     3,
-     5,
-     7,
-     10,
-     12
-    ]
-   },
-   {
-    "id": "prayers-du-as-of-night-of-eid-ul-fitr",
-    "idx": [
-     3,
-     5,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     16,
-     17,
-     18
-    ]
-   },
-   {
-    "id": "aamal-for-the-day-of-eid-ul-fitr",
-    "idx": [
-     6,
-     11,
-     14,
-     17,
-     18
-    ]
-   },
-   {
-    "id": "eid-prayer",
-    "idx": [
-     1,
-     2,
-     6,
-     8,
-     10,
-     12,
-     14
-    ]
-   },
-   {
-    "id": "zilqad",
-    "idx": [
-     1,
-     3
-    ]
-   },
-   {
-    "id": "night-day-of-25th-zilqad-the-spreading-of-the-earth",
-    "idx": [
-     4,
-     6,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15
-    ]
-   },
-   {
-    "id": "zilhajj",
-    "idx": [
-     3,
-     5,
-     8,
-     9,
-     10,
-     11,
-     12,
-     15,
-     16,
-     17,
-     18,
-     22,
-     23
-    ]
    },
    {
     "id": "1st-day-of-zilhajj",
@@ -2742,10 +1981,10 @@
     ]
    }
   ],
-  "words": 5917
+  "words": 6433
  },
  {
-  "chunk": 11,
+  "chunk": 107,
   "sections": [
    {
     "id": "dua-of-imam-al-husayn-on-the-day-of-arafat",
@@ -2975,139 +2214,8 @@
   "words": 6460
  },
  {
-  "chunk": 12,
+  "chunk": 108,
   "sections": [
-   {
-    "id": "28th-of-safar",
-    "idx": [
-     3,
-     5
-    ]
-   },
-   {
-    "id": "17th-of-rabi-al-awwal-birthday-of-holy-prophet-s",
-    "idx": [
-     7
-    ]
-   },
-   {
-    "id": "aamal-in-jamadi-al-akhirah",
-    "idx": [
-     1,
-     3,
-     5,
-     7
-    ]
-   },
-   {
-    "id": "3rd-jamadi-al-akhirah-martyrdom-of-lady-fatimah-al-zahra-s",
-    "idx": [
-     2
-    ]
-   },
-   {
-    "id": "general-aamal-of-each-months",
-    "idx": [
-     5,
-     6,
-     7
-    ]
-   },
-   {
-    "id": "aamal-of-the-day-of-navroz",
-    "idx": [
-     1,
-     2,
-     4
-    ]
-   },
-   {
-    "id": "etiquettes-of-travel",
-    "idx": [
-     2,
-     4,
-     6,
-     10,
-     12,
-     14
-    ]
-   },
-   {
-    "id": "news-of-safi-the-servant-of-imam-al-hadi-a-and-his-journey-t",
-    "idx": [
-     2,
-     4,
-     11,
-     13
-    ]
-   },
-   {
-    "id": "etiquettes-of-journey",
-    "idx": [
-     12,
-     15
-    ]
-   },
-   {
-    "id": "first-chapter-etiquettes-of-ziyarah",
-    "idx": [
-     9,
-     18,
-     23
-    ]
-   },
-   {
-    "id": "asking-permission-for-entering-the-holy-shrines-izn-dukhool",
-    "idx": [
-     2,
-     3,
-     5,
-     7
-    ]
-   },
-   {
-    "id": "another-izn-dukhool",
-    "idx": [
-     1,
-     2,
-     3,
-     4,
-     5
-    ]
-   },
-   {
-    "id": "method-of-ziyarah-of-holy-prophet-s-in-madinah",
-    "idx": [
-     2,
-     4,
-     5,
-     7,
-     8,
-     9,
-     10,
-     11,
-     14,
-     16,
-     18
-    ]
-   },
-   {
-    "id": "ziyarah-of-lady-fatimah-al-zahra",
-    "idx": [
-     1,
-     3,
-     4,
-     5,
-     6,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16
-    ]
-   },
    {
     "id": "visiting-the-holy-prophet-from-a-distance",
     "idx": [
@@ -3254,69 +2362,6 @@
      2,
      4
     ]
-   }
-  ],
-  "words": 6420
- },
- {
-  "chunk": 13,
-  "sections": [
-   {
-    "id": "first-ziyarah",
-    "idx": [
-     2,
-     4,
-     6,
-     7,
-     9
-    ]
-   },
-   {
-    "id": "excerpts-from-the-poem-of-shaykh-al-azri",
-    "idx": [
-     1,
-     2,
-     4,
-     6,
-     8,
-     10,
-     12,
-     13,
-     14,
-     15,
-     17,
-     19,
-     20,
-     22,
-     24,
-     25,
-     26,
-     27,
-     28,
-     30,
-     31,
-     32,
-     33,
-     34,
-     36,
-     37,
-     38,
-     39,
-     40,
-     42,
-     43,
-     45,
-     47,
-     48,
-     50,
-     52,
-     54,
-     55,
-     58,
-     60,
-     62,
-     64
-    ]
    },
    {
     "id": "duas-after-the-ziyarah-of-h-ali-a-s-and-after-the-recitation",
@@ -3422,80 +2467,11 @@
     ]
    }
   ],
-  "words": 5109
+  "words": 6943
  },
  {
-  "chunk": 14,
+  "chunk": 109,
   "sections": [
-   {
-    "id": "bidding-farewell-to-imam-ali-a",
-    "idx": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     11,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     19,
-     20,
-     21,
-     22,
-     23,
-     24,
-     25,
-     26,
-     27,
-     28,
-     29,
-     30,
-     31,
-     32,
-     33,
-     34,
-     35,
-     36,
-     37,
-     38,
-     39,
-     40,
-     41,
-     42,
-     43,
-     44,
-     45,
-     46,
-     47,
-     48,
-     49,
-     50,
-     51,
-     52,
-     53,
-     54,
-     55,
-     56,
-     57,
-     58,
-     59,
-     60,
-     61,
-     62,
-     63,
-     64,
-     65,
-     66,
-     67,
-     68,
-     69,
-     70
-    ]
-   },
    {
     "id": "ziyarah-on-the-holy-prophet-s-birthday",
     "idx": [
@@ -3591,177 +2567,6 @@
      19,
      20,
      21
-    ]
-   }
-  ],
-  "words": 6410
- },
- {
-  "chunk": 15,
-  "sections": [
-   {
-    "id": "aamal-in-the-seat-of-judgment-dakkat-al-qaza-and-the-place-o",
-    "idx": [
-     1,
-     10,
-     12
-    ]
-   },
-   {
-    "id": "prayers-and-supplications-in-the-center-of-the-mosque",
-    "idx": [
-     1
-    ]
-   },
-   {
-    "id": "aamal-at-the-seventh-column-sutoon",
-    "idx": [
-     1,
-     2,
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     11,
-     12,
-     13,
-     15,
-     17,
-     19,
-     22
-    ]
-   },
-   {
-    "id": "aamal-at-the-fifth-column-sutoon",
-    "idx": [
-     5,
-     6,
-     7,
-     9
-    ]
-   },
-   {
-    "id": "aamal-at-the-third-column-sutoon",
-    "idx": [
-     1,
-     2,
-     3,
-     4,
-     6,
-     10,
-     12,
-     15,
-     17,
-     19,
-     21
-    ]
-   },
-   {
-    "id": "aamal-at-bab-al-faraj",
-    "idx": [
-     1,
-     2,
-     5,
-     6,
-     7,
-     8,
-     10,
-     13,
-     15,
-     18,
-     19,
-     20,
-     22,
-     24,
-     26,
-     28,
-     30
-    ]
-   },
-   {
-    "id": "the-whispered-prayer-munajat-of-ameerul-momeneen-a",
-    "idx": [
-     1,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     16
-    ]
-   },
-   {
-    "id": "the-ziyarah-of-muslim-ibn-aqil",
-    "idx": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     8,
-     9,
-     10,
-     11,
-     12,
-     14
-    ]
-   },
-   {
-    "id": "the-ziyarah-of-hani-ibn-urwah",
-    "idx": [
-     1,
-     2,
-     3,
-     4
-    ]
-   },
-   {
-    "id": "aamal-of-masjid-al-sahla",
-    "idx": [
-     7,
-     8,
-     9,
-     11,
-     13,
-     15,
-     16,
-     17,
-     19,
-     21,
-     23,
-     25,
-     26,
-     28,
-     32,
-     35
-    ]
-   },
-   {
-    "id": "aamal-of-masjid-zayd",
-    "idx": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     9,
-     11,
-     13,
-     15
-    ]
-   },
-   {
-    "id": "zayd-and-sasah",
-    "idx": [
-     4
     ]
    },
    {
@@ -3876,133 +2681,6 @@
      4,
      5
     ]
-   }
-  ],
-  "words": 6126
- },
- {
-  "chunk": 16,
-  "sections": [
-   {
-    "id": "seventh-form-of-ziyarah-ziyarah-warith",
-    "idx": [
-     2,
-     5,
-     9,
-     11,
-     12,
-     14,
-     16,
-     18,
-     19,
-     20,
-     21,
-     22,
-     23,
-     25,
-     27,
-     29,
-     31,
-     33
-    ]
-   },
-   {
-    "id": "explanations-about-the-additions-in-ziyarah-warith",
-    "idx": [
-     1,
-     3
-    ]
-   },
-   {
-    "id": "denunciation-of-the-presence-of-unworthy-things-in-books-of-",
-    "idx": [
-     12,
-     14
-    ]
-   },
-   {
-    "id": "ziyarah-of-al-abbas-ibn-ali",
-    "idx": [
-     2,
-     3,
-     4,
-     5,
-     7,
-     8,
-     9,
-     10,
-     13,
-     16,
-     18,
-     19,
-     20,
-     21,
-     23,
-     24
-    ]
-   },
-   {
-    "id": "stature-and-position-of-al-abbas",
-    "idx": [
-     3,
-     5
-    ]
-   },
-   {
-    "id": "ziyarah-of-imam-husayn-a-on-the-1st-of-rajab",
-    "idx": [
-     7,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     21,
-     22,
-     24,
-     26,
-     27,
-     28
-    ]
-   },
-   {
-    "id": "ziyarah-on-the-15th-of-rajab",
-    "idx": [
-     2,
-     4,
-     5,
-     6,
-     7,
-     8,
-     10,
-     12
-    ]
-   },
-   {
-    "id": "ziyarah-on-the-15th-of-shaaban",
-    "idx": [
-     3,
-     4,
-     5,
-     6
-    ]
-   },
-   {
-    "id": "ziyarah-of-imam-husayn-a-at-the-qadr-nights",
-    "idx": [
-     6,
-     7,
-     8,
-     10,
-     12,
-     14,
-     16
-    ]
    },
    {
     "id": "ziyarah-on-the-eid-al-fitr-and-eid-al-adha-days",
@@ -4059,7 +2737,13 @@
      40,
      42
     ]
-   },
+   }
+  ],
+  "words": 6970
+ },
+ {
+  "chunk": 110,
+  "sections": [
    {
     "id": "dua-alqamah",
     "idx": [
@@ -4087,169 +2771,6 @@
      23,
      24,
      25
-    ]
-   }
-  ],
-  "words": 6019
- },
- {
-  "chunk": 17,
-  "sections": [
-   {
-    "id": "second-form-of-ziyarah-on-day-of-ashura-lesser-known-version",
-    "idx": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     17,
-     18
-    ]
-   },
-   {
-    "id": "ziyarah-on-the-day-of-arbaeen-the-twentieth-of-safar",
-    "idx": [
-     4,
-     5,
-     6,
-     7,
-     8,
-     9,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     20
-    ]
-   },
-   {
-    "id": "visiting-imam-husayn-a-on-special-occasions",
-    "idx": [
-     20
-    ]
-   },
-   {
-    "id": "merits-and-etiquettes-of-the-soil-of-imam-husayn-s-a-tomb",
-    "idx": [
-     12,
-     16,
-     25
-    ]
-   },
-   {
-    "id": "supplicatory-prayer-for-seeking-refuge-with-allah",
-    "idx": [
-     2,
-     3,
-     5,
-     9
-    ]
-   },
-   {
-    "id": "ziyarah-of-imam-al-kazim-a",
-    "idx": [
-     2,
-     4,
-     6,
-     8,
-     10,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     19,
-     20
-    ]
-   },
-   {
-    "id": "another-form-of-ziyarah-of-imam-al-kazim",
-    "idx": [
-     2,
-     4,
-     5,
-     6,
-     8,
-     10,
-     12,
-     14,
-     16
-    ]
-   },
-   {
-    "id": "salawat-upon-imam-al-kazim-a",
-    "idx": [
-     1,
-     2,
-     3,
-     4
-    ]
-   },
-   {
-    "id": "ziyarah-of-imam-al-jawad",
-    "idx": [
-     2,
-     3,
-     5,
-     7,
-     9,
-     11,
-     16,
-     17,
-     18,
-     19,
-     22,
-     23,
-     25,
-     30
-    ]
-   },
-   {
-    "id": "ziyarah-which-is-common-to-imam-al-kazim-and-imam-al-jawad",
-    "idx": [
-     2,
-     7,
-     8,
-     10,
-     18,
-     20
-    ]
-   },
-   {
-    "id": "visitation-to-naeb-khaas-special-deputies-of-imam-mahdi-a",
-    "idx": [
-     6,
-     7
-    ]
-   },
-   {
-    "id": "merits-method-of-visiting-the-tomb-of-salman",
-    "idx": [
-     22,
-     23,
-     24,
-     25,
-     26,
-     27,
-     28,
-     29,
-     32,
-     33
     ]
    },
    {
@@ -4324,52 +2845,6 @@
      13,
      15,
      31
-    ]
-   }
-  ],
-  "words": 6082
- },
- {
-  "chunk": 18,
-  "sections": [
-   {
-    "id": "ziyarah-of-imam-ali-al-naqi-al-hadi",
-    "idx": [
-     1,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8,
-     10,
-     11,
-     12,
-     14,
-     15,
-     16,
-     17,
-     18,
-     20
-    ]
-   },
-   {
-    "id": "ziyarah-of-imam-al-hasan-al-askari",
-    "idx": [
-     3,
-     4,
-     5,
-     7,
-     8,
-     9,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18
     ]
    },
    {
@@ -4468,10 +2943,10 @@
     ]
    }
   ],
-  "words": 5069
+  "words": 6418
  },
  {
-  "chunk": 19,
+  "chunk": 111,
   "sections": [
    {
     "id": "other-rites-at-the-sardaab",
@@ -4611,93 +3086,6 @@
      14,
      16
     ]
-   }
-  ],
-  "words": 5285
- },
- {
-  "chunk": 20,
-  "sections": [
-   {
-    "id": "salawat-upon-the-holy-infallibles",
-    "idx": [
-     2,
-     3,
-     4,
-     6,
-     7,
-     9,
-     11,
-     12,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     20,
-     22,
-     23,
-     25,
-     27,
-     29,
-     31,
-     33,
-     36,
-     38,
-     39,
-     40
-    ]
-   },
-   {
-    "id": "visiting-lady-fatimah-al-masumah-in-qum",
-    "idx": [
-     7,
-     9,
-     11,
-     13,
-     14,
-     15,
-     16,
-     17,
-     18,
-     19
-    ]
-   },
-   {
-    "id": "ziyarah-of-abd-al-azim-al-hasani",
-    "idx": [
-     14,
-     15,
-     16,
-     17,
-     18,
-     19,
-     20
-    ]
-   },
-   {
-    "id": "visiting-the-graves-of-the-faithful-believers",
-    "idx": [
-     7,
-     9,
-     11,
-     13,
-     15,
-     21
-    ]
-   },
-   {
-    "id": "emphasis-on-sending-gifts-to-the-dead",
-    "idx": [
-     4
-    ]
-   },
-   {
-    "id": "acquiring-lesson-from-the-dead",
-    "idx": [
-     4
-    ]
    },
    {
     "id": "farewell-prayer-of-ramadhan",
@@ -4733,7 +3121,13 @@
      17,
      18
     ]
-   },
+   }
+  ],
+  "words": 6752
+ },
+ {
+  "chunk": 112,
+  "sections": [
    {
     "id": "the-comprehensive-ziyarah-of-the-imams-a",
     "idx": [
@@ -4770,13 +3164,7 @@
      37,
      38
     ]
-   }
-  ],
-  "words": 5553
- },
- {
-  "chunk": 21,
-  "sections": [
+   },
    {
     "id": "dua-aaliyah-al-mazameen",
     "idx": [
@@ -5116,7 +3504,13 @@
     "idx": [
      1
     ]
-   },
+   }
+  ],
+  "words": 6930
+ },
+ {
+  "chunk": 113,
+  "sections": [
    {
     "id": "dua-between-sunset-and-bedtime",
     "idx": [
@@ -5216,13 +3610,7 @@
      11,
      13
     ]
-   }
-  ],
-  "words": 6199
- },
- {
-  "chunk": 22,
-  "sections": [
+   },
    {
     "id": "duas-at-daybreak-and-sunset",
     "idx": [
@@ -5810,7 +4198,13 @@
      1,
      3
     ]
-   },
+   }
+  ],
+  "words": 6999
+ },
+ {
+  "chunk": 114,
+  "sections": [
    {
     "id": "taweez-against-thieves",
     "idx": [
@@ -5826,13 +4220,7 @@
      7,
      9
     ]
-   }
-  ],
-  "words": 6094
- },
- {
-  "chunk": 23,
-  "sections": [
+   },
    {
     "id": "dua-in-the-mornings-and-evenings",
     "idx": [
@@ -6105,10 +4493,10 @@
     ]
    }
   ],
-  "words": 6429
+  "words": 6565
  },
  {
-  "chunk": 24,
+  "chunk": 115,
   "sections": [
    {
     "id": "incident-of-abd-al-rahman-bin-sayyabah-and-the-will-of-imam-",
