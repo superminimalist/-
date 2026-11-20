@@ -1,0 +1,10 @@
+{
+  "name": "막장하우스",
+  "short_name": "막장하우스",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#06150e",
+  "theme_color": "#0b2a1c",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

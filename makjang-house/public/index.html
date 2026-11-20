@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0b2a1c">
+<title>막장하우스</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 홈 -->
+  <section id="scr-home" class="screen active">
+    <div class="neon">막장하우스</div>
+    <div class="sub">인생 한 방 · 카드 한 장 · 칩 몽땅</div>
+
+    <div class="panel">
+      <label class="lbl">닉네임</label>
+      <input id="in-name" maxlength="12" placeholder="타짜 지망생">
+      <label class="lbl">캐릭터 (스킬은 라운드당 1번)</label>
+      <div id="char-grid" class="char-grid"></div>
+    </div>
+
+    <div class="panel row2">
+      <div>
+        <div class="lbl">🔌 오프라인 — 봇이랑 한판</div>
+        <div class="row">
+          <select id="in-bots">
+            <option value="1">봇 1명</option><option value="2">봇 2명</option>
+            <option value="3" selected>봇 3명</option><option value="4">봇 4명</option><option value="5">봇 5명</option>
+          </select>
+          <button id="btn-offline" class="btn gold">판 깔기</button>
+        </div>
+      </div>
+      <div>
+        <div class="lbl">🌐 온라인 — 친구 털기</div>
+        <div class="row">
+          <button id="btn-create" class="btn pink">방 만들기</button>
+        </div>
+        <div class="row">
+          <input id="in-code" maxlength="4" placeholder="방 코드" class="code-in">
+          <button id="btn-join" class="btn">참가</button>
+        </div>
+        <button id="btn-rejoin" class="btn ghost hidden">이전 방 재접속</button>
+        <div id="online-note" class="note"></div>
+      </div>
+    </div>
+
+    <details class="panel rules">
+      <summary>📜 하우스 룰 (특수카드 12종 · 스킬 7종)</summary>
+      <div id="rules-body"></div>
+    </details>
+  </section>
+
+  <!-- 대기실 -->
+  <section id="scr-room" class="screen">
+    <div class="neon small">대기실</div>
+    <div class="panel center">
+      <div class="lbl">방 코드</div>
+      <div id="room-code" class="room-code">----</div>
+      <button id="btn-copy" class="btn ghost">초대 링크 복사</button>
+    </div>
+    <div class="panel">
+      <div id="room-players"></div>
+      <div class="row">
+        <button id="btn-addbot" class="btn">🤖 봇 추가</button>
+        <button id="btn-start" class="btn gold">🎲 시작</button>
+      </div>
+      <div id="room-note" class="note"></div>
+    </div>
+    <button id="btn-room-leave" class="btn ghost">나가기</button>
+  </section>
+
+  <!-- 게임 -->
+  <section id="scr-game" class="screen">
+    <header id="hud"></header>
+    <div id="opps"></div>
+    <div id="felt">
+      <div id="center"></div>
+      <div id="feed"></div>
+    </div>
+    <div id="mine">
+      <div id="my-bar"></div>
+      <div id="timer"><div id="timer-fill"></div></div>
+      <div id="actions"></div>
+      <div id="hand"></div>
+    </div>
+  </section>
+
+</div>
+<div id="fx"></div>
+<div id="bubbles"></div>
+<div id="modal" class="hidden"><div id="modal-box"></div></div>
+<div id="toast"></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

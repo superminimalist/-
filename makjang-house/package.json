@@ -1,0 +1,12 @@
+{
+  "name": "makjang-house",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "막장하우스 — 코믹 도박판 원카드. 온라인(웹소켓) + 오프라인(봇, PWA).",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/sim.js"
+  },
+  "engines": { "node": ">=18" }
+}
