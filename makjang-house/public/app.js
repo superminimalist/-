@@ -361,12 +361,12 @@ function render(v) {
   const dirIcon = `<span class="dir ${v.dir > 0 ? 'cw' : 'ccw'}">${v.dir > 0 ? '↻' : '↺'}</span>`;
 
   $('#hud').innerHTML = `<span class="chip-pill">R ${v.round}/${v.maxRounds}</span>
-    <span class="chip-pill pot">💰 판돈 ${v.pot}</span><span class="chip-pill">앤티 ${v.ante}</span>
-    ${mode === 'online' ? `<span class="chip-pill">방 ${esc(roomCode)}</span>` : '<span class="chip-pill">오프라인</span>'}
+    <span class="chip-pill pot">💰 판돈 ${v.pot}</span><span class="chip-pill">앤티 ${v.ante}</span><span class="chip-pill mode-pill">덱 ${v.deckCount}</span>
+    ${mode === 'online' ? `<span class="chip-pill mode-pill">방 ${esc(roomCode)}</span>` : '<span class="chip-pill mode-pill">오프라인</span>'}
     <span class="spacer"></span>
     <button class="btn sm ghost" id="btn-taunt">💬</button>
     <button class="btn sm ghost" id="btn-mute">${muted ? '🔇' : '🔊'}</button>
-    <button class="btn sm ghost" id="btn-quit">나가기</button>`;
+    <button class="btn sm ghost" id="btn-quit">✕</button>`;
 
   // 상대: 내 다음 자리부터 순서대로
   const n = v.players.length;
@@ -511,7 +511,11 @@ document.addEventListener('click', (e) => {
   if (t.dataset.report) { send({ type: 'report', target: +t.dataset.report }); return; }
   if (t.id === 'deck') { if (view?.turn === view?.me && view.drawn == null) send({ type: 'draw' }); return; }
   if (t.id === 'btn-mute') { muted = !muted; store.set('muted', muted); render(view); return; }
-  if (t.id === 'btn-quit') { if (confirm('진짜 판 접고 나감?')) goHome(); return; }
+  if (t.id === 'btn-quit') {
+    choose('<h2>진짜 판 접고 나감?</h2><div class="row"><button class="btn red" id="m-yes">나가기</button></div>', (done) => ($('#m-yes').onclick = () => done(true)))
+      .then((y) => y && goHome());
+    return;
+  }
   if (t.id === 'btn-taunt') { onTaunt(); return; }
   if (t.classList.contains('card')) { onCardClick(+t.dataset.id); return; }
   const act = t.dataset.act;
@@ -537,8 +541,10 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'u' || e.key === 'U') send({ type: 'declare' });
 });
 
-if (!/^https?:/.test(location.protocol)) $('#online-note').textContent = '파일로 열었음 — 온라인은 서버 주소로 접속해야 됨.';
+const ARTIFACT = !!window.__ARTIFACT__; // 단일 HTML 빌드: 서버 없음 → 오프라인 전용
+if (ARTIFACT) { $('#online-box').classList.add('hidden'); $('#scr-home .row2').style.gridTemplateColumns = '1fr'; }
+else if (!/^https?:/.test(location.protocol)) $('#online-note').textContent = '파일로 열었음 — 온라인은 서버 주소로 접속해야 됨.';
 else if (!navigator.onLine) $('#online-note').textContent = '지금 오프라인 — 봇이랑 하세요.';
-if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
+if (!ARTIFACT && 'serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
 renderHome();
 requestAnimationFrame(frame);

@@ -6,6 +6,7 @@
 cd makjang-house
 node server.js          # http://localhost:8080  (PORT=xxxx 로 변경)
 npm test                # 봇끼리 300판 시뮬레이션 — 규칙 엔진 무결성 검사
+node build-single.mjs    # 서버 없는 단일 HTML (오프라인 전용) → dist/
 ```
 
 의존성 0. Node 18+.

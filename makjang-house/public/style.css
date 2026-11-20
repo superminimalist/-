@@ -114,7 +114,7 @@ input:focus { border-color: var(--gold); }
 }
 .opp.turn { border-color: var(--gold); box-shadow: 0 0 16px rgba(255, 213, 74, .45); transform: translateY(2px); }
 .opp.out { opacity: .35; filter: grayscale(1); }
-.opp .top { display: flex; align-items: center; gap: 6px; }
+.opp .top { display: flex; align-items: center; gap: 6px; padding-inline-end: 26px; min-width: 0; }
 .opp .em { font-size: 22px; }
 .opp .nm { font-weight: 900; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .opp .meta { font-size: 11px; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
@@ -229,5 +229,23 @@ input:focus { border-color: var(--gold); }
   :root { --card-w: 56px; --card-h: 82px; }
   .card.big { --card-w: 68px; --card-h: 100px; }
   #center { gap: 14px; }
-  .opp { flex-basis: 104px; }
+  .opp { flex-basis: 104px; padding: 6px; }
+  .opp .em { font-size: 18px; }
+  .opp .cnt { font-size: 18px; }
+  .opp .backs { height: 22px; margin-top: 4px; }
+  .opp .back { width: 14px; height: 22px; }
+  #hud { font-size: 12px; gap: 6px; flex-wrap: nowrap; }
+  #hud .chip-pill { padding: 3px 8px; white-space: nowrap; }
+  #hud .chip-pill.pot { font-size: 13px; }
+  #hud .mode-pill { display: none; }
+  #hud .btn.sm { padding: 4px 8px; }
+  #felt { flex-direction: column; justify-content: center; gap: 10px; min-height: 0; }
+  #feed { position: static; max-width: 100%; align-items: center; }
+  #feed .line:nth-last-child(n+4) { display: none; }
+  .char-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .char { padding: 6px; text-align: center; }
+  .char .em { font-size: 22px; }
+  .char .ds { display: none; }
+  .char.sel .ds { display: block; grid-column: 1 / -1; }
+  .btn { padding: 9px 12px; }
 }
